@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="/main.css">
+    <title>Wallcarter</title>
+</head>
+<body>
+    <div class="container">
+        <div class="col-7">
+            <img id="login-img" src="">
+        </div>
+        <div class="col-4">
+            <form action="/api-auth/user/auth" method="POST, GET">
+                <div id="form-login">
+                    <h1 id="login-title">Wall Carter</h1><br>
+                    <h3 id="login-subtitle">Login User</h3><br>
+                    <label id="lb-login">Email</label><br><input id="login-form" type="email" name="email" placeholder="Email" required><br>
+                    <label id="lb-login">Password</label><br><input id="login-form" type="password" name="password" placeholder="Password" required><br>
+                    <button id="login-btn" type="submit" class="btn btn-primary">Send</button>
+                </div>
+
+            </form>
+        </div>        
+    </div>
+</body>
+<!--script>
+    document.addEventListener('DOMContentLoaded', function(){
+        let formReset = document.getElementById('gesdoc');
+        formReset.addEventListener('submit', function(){
+            formReset.reset();
+        });
+    });
+</script-->
+</html>

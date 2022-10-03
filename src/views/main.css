@@ -1,0 +1,64 @@
+*{
+    margin: 0px;
+    padding: 0%;
+}
+
+#login-img{
+    width: 600px;
+    height: 900;
+}
+
+.login{
+    align-items: center;
+    justify-content: center;
+}
+
+#form-login{
+    background-color: #ab0d2f;
+    padding: 20px;
+    margin-top: 100px;
+    border-radius: 20px;
+    text-align: center;
+}
+
+#login-title{
+    text-align: center;
+    color: white;
+}
+
+#login-subtitle{
+    text-align: center;
+    color: white;
+}
+
+#login-form{
+    width: 280px;
+}
+
+#login-btn{
+    margin-top: 20px;
+    text-align: center;
+    justify-items: center;
+    align-items: center;
+}
+
+#lb-login{
+    font-weight: bold;
+    color: white;
+    text-align: left;
+}
+
+
+/* Panel Admin */
+#card-item-padmin {
+    display: flex;
+    font-weight: bold;
+    align-items: center;
+    justify-items: left;
+    justify-content: left;
+    background-color: #54426b;
+    color: white;
+    width: 150px;
+    height: 100px;
+    margin: 10px;
+}

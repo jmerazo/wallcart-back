@@ -44,11 +44,11 @@ const listPaymentByDateController = async (req, res, next) => {
 
 const listPaymentByParametersController = async (req, res, next) => {
 
-    console.log('Nit: ', req.body)
+    console.log('Body: ', req.body)
     const search = {
-        nit : req.body.search.nit,
-        fi : req.body.search.date_init,
-        ff : req.body.search.date_end
+        nit : req.body.nit,
+        fi : req.body.date_init,
+        ff : req.body.date_end
     }
 
     paymentsModel.listPaymentByParameters(search, (err, data) => {

@@ -49,7 +49,11 @@ const listPaymentByDate = async function(date, result) {
 
 //List Payment by multiparameters
 const listPaymentByParameters = async function(search, result) {
-    await connection.query(`SELECT * FROM abonosyotrasfras WHERE nit LIKE '${search.date}' AND fecha_pago > '${search.fi}' AND fecha_pago < '${search.ff}`, (error, payments) => {
+	console.log('Parameters model: ', search)
+	console.log('Nit model: ', search.nit)
+	console.log('Date init model: ', search.fi)
+	console.log('Date end model: ', search.ff)
+    await connection.query(`SELECT * FROM abonosyotrasfras WHERE nit LIKE '${search.nit}' AND fecha_pago > '${search.fi}' AND fecha_pago < '${search.ff}'`, (error, payments) => {
 		if(error){
 			return result(error, null);
 		}else{

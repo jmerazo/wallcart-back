@@ -10,6 +10,6 @@ router.get('/payments/all', paymentsController.listPaymentsController);
 router.get('/payments/nit/:nit', paymentsController.listPaymentByNitController);
 router.get('/payments/sales/:fra', paymentsController.listPaymentByFraController);
 router.get('/payments/date/:date', paymentsController.listPaymentByDateController);
-router.get('/payments/search', paymentsController.listPaymentByParametersController);
+router.get('/payments/search/:nit/:date_init/:date_end', paymentsController.listPaymentByParametersController);
 
 module.exports = router;

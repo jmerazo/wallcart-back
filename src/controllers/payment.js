@@ -44,14 +44,17 @@ const listPaymentByDateController = async (req, res, next) => {
 
 const listPaymentByParametersController = async (req, res, next) => {
 
-    console.log('Body: ', req.body)
-    const search = {
-        nit : req.body.nit,
-        fi : req.body.date_init,
-        ff : req.body.date_end
-    }
+    //console.log('Body: ', req.body)
+    //const search = {
+    //    nit : req.params.nit,
+    //    fi : req.params.date_init,
+    //    ff : req.params.date_end
+    //}
+    const nit = req.params.nit;
+    const fi = req.params.date_init;
+    const ff = req.params.date_end;
 
-    paymentsModel.listPaymentByParameters(search, (err, data) => {
+    paymentsModel.listByParameters(nit, fi, ff, (err, data) => {
         if(err){
             res.status(500).json({message:'Error'})
         }else{

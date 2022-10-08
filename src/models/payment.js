@@ -2,7 +2,7 @@ const connection = require('../db/con_db');
 
 //List users all
 const listPayments = async function(result) {
-    await connection.query('SELECT * FROM abonosyotrasfras LIMIT 1000', (error, payments) => {
+    await connection.query('SELECT * FROM abonosyotrasfras ORDER BY fecha_pago desc LIMIT 200 OFFSET 200', (error, payments) => {
 		if(error){
 			return result(error, null);
 		}else{

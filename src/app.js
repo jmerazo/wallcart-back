@@ -8,6 +8,7 @@ const session = require('express-session');
 const validator = require('express-validator');
 const passport = require('passport');
 const flash = require('connect-flash');
+const paginate = require('express-paginate');
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'views')));
+app.use(paginate.middleware(10, 50));
 
 //Router
 const services = require('./router/routes');

@@ -1,4 +1,5 @@
 const paymentsModel = require('../models/payment');
+const agesModel = require('../models/payments_ages');
 
 const listPaymentsController = async (req, res, next) => {
     await paymentsModel.listPayments(function(err, data){
@@ -63,11 +64,18 @@ const listPaymentByParametersController = async (req, res, next) => {
     });
 }
 
+// Ages
+const agesListController = async (req, res, next) => {
+    await agesModel.agesList((data) => {
+        res.status(200).json(data);
+    })
+}
 
 module.exports = {
     listPaymentsController,
     listPaymentByNitController,
     listPaymentByFraController,
     listPaymentByDateController,
-    listPaymentByParametersController
+    listPaymentByParametersController,
+    agesListController
 }

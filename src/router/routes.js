@@ -20,6 +20,6 @@ router.post('/upload-excel', uploadFileHelper.uploadFile.single('upload-excel'),
 })
 
 // Ages report
-router.get('/report/ages', paymentsController.agesListController);
+router.get('/report/ages/:date', paymentsController.agesListController);
 
 module.exports = router;

@@ -66,8 +66,14 @@ const listPaymentByParametersController = async (req, res, next) => {
 
 // Ages
 const agesListController = async (req, res, next) => {
-    await agesModel.agesList((data) => {
-        res.status(200).json(data);
+    var date = req.params.date
+    console.log('Date: ', date);
+    await agesModel.agesList(date, (data, error) => {
+        if(error){
+            res.status(500).json({message:'Error', error})
+        }else{
+            res.status(200).json(data);
+        }
     })
 }
 

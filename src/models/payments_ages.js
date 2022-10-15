@@ -68,7 +68,21 @@ const ages12MonthList = async function(result) {
 
 // Age report
 const agesList = async (date, result) => {
-    await connection.query(`SELECT a.nit, e.nombre, e.cod_reg, r.nom_reg, COALESCE(SUM(CASE WHEN DATEDIFF('${date}', fecha_envio) < 1 THEN valor_factura END),0) edad0, COALESCE(SUM(CASE WHEN DATEDIFF('${date}', fecha_envio) < 31 THEN valor_factura END),0) edad1, COALESCE(SUM(CASE WHEN DATEDIFF('${date}', fecha_envio) > 30 AND DATEDIFF('${date}', fecha_envio) < 61 THEN valor_factura END),0) edad2, COALESCE(SUM(CASE WHEN DATEDIFF('${date}', fecha_envio) > 60 AND DATEDIFF('${date}', fecha_envio) < 91 THEN valor_factura END),0) edad3, COALESCE(SUM(CASE WHEN DATEDIFF('${date}', fecha_envio) > 90 AND DATEDIFF('${date}', fecha_envio) < 181 THEN valor_factura END),0) edad4, COALESCE(SUM(CASE WHEN DATEDIFF('${date}', fecha_envio) > 180 AND DATEDIFF('${date}', fecha_envio) < 361 THEN valor_factura END),0) edad5, COALESCE(SUM(CASE WHEN DATEDIFF('${date}', fecha_envio) > 360 THEN valor_factura END),0) edad6 FROM consolidado AS a INNER JOIN empresa AS e ON a.nit = e.nit INNER JOIN regimen AS r ON r.cod_reg = e.cod_reg GROUP BY a.nit ORDER BY r.nom_reg`, (error, ages) => {
+    await connection.query(`SELECT 
+							c.id, c.nit, e.nombre, e.cod_reg, r.nom_reg, 
+							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fecha_envio) < 1 THEN c.valor_factura END),0) edad0, 
+							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fecha_envio) < 31 THEN c.valor_factura END),0) edad1,
+							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fecha_envio) > 30 AND DATEDIFF('${date}', c.fecha_envio) < 61 THEN c.valor_factura END),0) edad2, 
+							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fecha_envio) > 60 AND DATEDIFF('${date}', c.fecha_envio) < 91 THEN c.valor_factura END),0) edad3, 
+							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fecha_envio) > 90 AND DATEDIFF('${date}', c.fecha_envio) < 181 THEN c.valor_factura END),0) edad4, 
+							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fecha_envio) > 180 AND DATEDIFF('${date}', c.fecha_envio) < 361 THEN c.valor_factura END),0) edad5, 
+							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fecha_envio) > 360 THEN c.valor_factura END),0) edad6 
+							FROM consolidado AS c 
+							INNER JOIN empresa AS e ON c.nit = e.nit 
+							INNER JOIN regimen AS r ON r.cod_reg = e.cod_reg
+							GROUP BY c.nit 
+							ORDER BY r.nom_reg`, 
+							(error, ages) => {
         if(error){
             return result(error)
         }else{

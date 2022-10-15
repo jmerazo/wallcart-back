@@ -1,0 +1,23 @@
+// SQL ages
+SELECT 
+    c.nit, e.nombre, e.cod_reg, r.nom_reg, 
+    COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fecha_envio) < 1 THEN c.valor_factura END),0) edad0,
+    COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fecha_envio) < 1 THEN a.total_glosas END),0) glosas0, 
+    COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fecha_envio) < 31 THEN c.valor_factura END),0) edad1,
+    COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fecha_envio) < 31 THEN a.total_glosas END),0) glosas1, 
+    COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fecha_envio) > 30 AND DATEDIFF('${date}', c.fecha_envio) < 61 THEN c.valor_factura END),0) edad2,
+    COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fecha_envio) > 30 AND DATEDIFF('${date}', c.fecha_envio) < 61 THEN a.total_glosas END),0) glosas2, 
+    COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fecha_envio) > 60 AND DATEDIFF('${date}', c.fecha_envio) < 91 THEN c.valor_factura END),0) edad3,
+    COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fecha_envio) > 60 AND DATEDIFF('${date}', c.fecha_envio) < 91 THEN a.total_glosas END),0) glosas3, 
+    COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fecha_envio) > 90 AND DATEDIFF('${date}', c.fecha_envio) < 181 THEN c.valor_factura END),0) edad4,
+    COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fecha_envio) > 90 AND DATEDIFF('${date}', c.fecha_envio) < 181 THEN a.total_glosas END),0) glosas4, 
+    COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fecha_envio) > 180 AND DATEDIFF('${date}', c.fecha_envio) < 361 THEN c.valor_factura END),0) edad5,
+    COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fecha_envio) > 180 AND DATEDIFF('${date}', c.fecha_envio) < 361 THEN a.total_glosas END),0) glosas5, 
+    COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fecha_envio) > 360 THEN c.valor_factura END),0) edad6,
+    COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fecha_envio) > 360 THEN a.total_glosas END),0) glosas6 
+    FROM consolidado AS c 
+    INNER JOIN empresa AS e ON c.nit = e.nit 
+    INNER JOIN regimen AS r ON r.cod_reg = e.cod_reg
+    INNER JOIN abonos AS a ON a.nit = c.nit AND a.factura = c.factura AND a.num_cto = c.num_cto 
+    GROUP BY c.nit 
+    ORDER BY r.nom_reg

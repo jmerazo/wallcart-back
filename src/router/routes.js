@@ -2,6 +2,7 @@ const { Router } = require('express');
 const router = Router();
 const paymentsController = require('../controllers/payment');
 const uploadFileHelper = require('../Helpers/uploadFile');
+const authController = require('../controllers/auth');
 
 // Route information to connect API
 router.get('/', function(req, res){res.status(200).json({ message: 'Connect to our API'})});
@@ -21,5 +22,8 @@ router.post('/upload-excel', uploadFileHelper.uploadFile.single('upload-excel'),
 
 // Ages report
 router.get('/report/ages/:date', paymentsController.agesListController);
+
+// User
+router.get('/user/:id', authController.listUserByIdController);
 
 module.exports = router;

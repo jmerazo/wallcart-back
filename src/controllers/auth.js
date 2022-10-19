@@ -168,6 +168,17 @@ const userAuthLogin = async (req, res) => {
     }
 }
 
+const listUserByIdController = async (req, res, next) => {
+    const id = req.params.id;
+    userAuthModel.listUserByIdModel(id, (err, data) => {
+        if(err){
+            res.status(500).json({message:'Error', err})
+        }else{
+            res.status(200).json(data);
+        }
+    });
+}
+
 const userAuthLogout = async (req, res) => {
     const authHeader = req.headers['authorization'];
     jwt.sign(authHeader, "", {expiresIn: 1}, (logout, err) => {
@@ -184,5 +195,6 @@ module.exports = {
     userAuthLogin,
     userAuthLogout,
     updatePassAuthLogin,
-    updateStatusController
+    updateStatusController,
+    listUserByIdController
 }

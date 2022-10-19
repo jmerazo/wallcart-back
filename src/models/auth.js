@@ -58,6 +58,16 @@ const deleteUserAuthModel = async (id, result) => {
 	});			
 }
 
+const listUserByIdModel = async (id, result) => {
+	await connection.query(`SELECT u.doc_type_id, u.doc_number, u.names, u.last_names, u.phone, u.email, u.rol_id FROM auth AS u WHERE u.id = ${id}`, (error, results) => {
+		if(error){
+			return result(error, null)
+		}else{
+			return result(null, results)
+		}
+	})
+}
+
 const userAuthByEmail = async (email, result) => {
 	console.log("Desde model: ", email);
 	await connection.query(`SELECT id,email,password,rol_id,status FROM auth WHERE email = "${email}" ORDER BY ID DESC LIMIT 1`, (error, validate) =>{
@@ -76,5 +86,6 @@ module.exports = {
     deleteUserAuthModel,
 	userAuthByEmail,
 	updatePassAuthModel,
-	updateStatusModel
+	updateStatusModel,
+	listUserByIdModel
 };

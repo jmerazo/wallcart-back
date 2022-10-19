@@ -132,7 +132,6 @@ const updateStatusController = async (req, res) => {
 const userAuthLogin = async (req, res) => {
     try {
         const {email, password} = req.body;
-        console.log("Username: ", email," - Password: ",password);
 
         if(!email && !password){
             res.status(400).send('All input is required');
@@ -155,9 +154,9 @@ const userAuthLogin = async (req, res) => {
                         {user_id: userData.id, email},
                         process.env.TOKEN_KEY,
                         {expiresIn: "2h"}
-                    );        
+                    );    
                     userData.token = token;        
-                    //res.json(userData);
+                    res.json(userData);
                 }else{
                     res.status(400).send('Invalid credentials'); 
                 }          

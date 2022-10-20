@@ -3,6 +3,7 @@ const router = Router();
 const paymentsController = require('../controllers/payment');
 const uploadFileHelper = require('../Helpers/uploadFile');
 const authController = require('../controllers/auth');
+const portfolioController = require('../controllers/portfolio')
 
 // Route information to connect API
 router.get('/', function(req, res){res.status(200).json({ message: 'Connect to our API'})});
@@ -25,5 +26,18 @@ router.get('/report/ages/:date', paymentsController.agesListController);
 
 // User
 router.get('/user/:id', authController.listUserByIdController);
+
+// Portfolio
+router.get('/portfolio/all', portfolioController.listPortfolioController);
+router.get('/portfolio/nit/:nit', portfolioController.listPortfolioByNitController);
+router.get('/portfolio/sales/:fra', portfolioController.listPortfolioByFraController);
+router.get('/portfolio/date/:date', portfolioController.listPortfolioByDateController);
+router.get('/portfolio/search/:nit/:date_init/:date_end', portfolioController.listPortfolioByParametersController);
+router.get('/portfolio/ages/:date', portfolioController.listAgesPortfolioController);
+router.get('/portfolio/params/:col/:param', portfolioController.listParametersController)
+router.post('/portfolio/upload-excel', uploadFileHelper.uploadFile.single('p-upload-excel'), (req, res) => {
+    uploadFileHelper.portfolioUpload(uploadFileHelper.filePathExFile + req.file.filename)
+    res.status(200).send('Successfull upload file xlsx')
+})
 
 module.exports = router;

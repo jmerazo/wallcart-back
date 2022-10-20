@@ -27,8 +27,20 @@ const importFileToDb = (exFile) => {
     })
 }
 
+const portfolioUpload = (exFile) => {
+    console.log('XLSX: ', exFile)
+    readXlsxFile(exFile).then((rows) => {
+        rows.shift()
+        let query = 'INSERT INTO cartera VALUES ?'
+        db.query(query, [rows], (error, response) => {
+            console.log(error || response)
+        })
+    })
+}
+
 module.exports = {
     uploadFile,
     importFileToDb,
-    filePathExFile
+    filePathExFile,
+    portfolioUpload
 }

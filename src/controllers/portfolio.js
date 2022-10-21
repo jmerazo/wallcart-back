@@ -49,6 +49,10 @@ const listParametersController = async (req, res, next) => {
     });
 }
 
+const listConsolidatedController = async (req, res, next) => {
+    await portModel.listConsolidatedModel((err, data) => {res.status(200).json(data)});    
+}
+
 const listAgesPortfolioController = async (req, res, next) => {
     var date = req.params.date
     await portModel.listAgesPortfolioModel(date, (data, error) => {
@@ -65,5 +69,6 @@ module.exports = {
     listPortfolioByDateController,
     listPortfolioByParametersController,
     listAgesPortfolioController,
-    listParametersController
+    listParametersController,
+    listConsolidatedController
 }

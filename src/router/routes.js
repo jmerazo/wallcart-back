@@ -34,9 +34,14 @@ router.get('/portfolio/sales/:fra', portfolioController.listPortfolioByFraContro
 router.get('/portfolio/date/:date', portfolioController.listPortfolioByDateController);
 router.get('/portfolio/search/:nit/:date_init/:date_end', portfolioController.listPortfolioByParametersController);
 router.get('/portfolio/ages/:date', portfolioController.listAgesPortfolioController);
-router.get('/portfolio/params/:col/:param', portfolioController.listParametersController)
-router.post('/portfolio/upload-excel', uploadFileHelper.uploadFile.single('p-upload-excel'), (req, res) => {
+router.get('/portfolio/params/:col/:param', portfolioController.listParametersController);
+router.get('/portfolio/consolidated', portfolioController.listConsolidatedController);
+router.post('/portfolio/upload-excel/beads', uploadFileHelper.uploadFile.single('p-upload-excel'), (req, res) => {
     uploadFileHelper.portfolioUpload(uploadFileHelper.filePathExFile + req.file.filename)
+    res.status(200).send('Successfull upload file xlsx')
+})
+router.post('/portfolio/upload-excel/payments', uploadFileHelper.uploadFile.single('p-upload-excel'), (req, res) => {
+    uploadFileHelper.portfPaymentsUpload(uploadFileHelper.filePathExFile + req.file.filename)
     res.status(200).send('Successfull upload file xlsx')
 })
 

@@ -4,9 +4,11 @@ const paymentsController = require('../controllers/payment');
 const uploadFileHelper = require('../Helpers/uploadFile');
 const authController = require('../controllers/auth');
 const portfolioController = require('../controllers/portfolio')
+const cors = require('cors')
+const corsOptions = require('../Helpers/cors');
 
 // Route information to connect API
-router.get('/', function(req, res){res.status(200).json({ message: 'Connect to our API'})});
+router.get('/', cors(corsOptions), (req, res) => {res.status(200).json({ message: 'Connect to our API'})});
 
 // Payments
 router.get('/payments/all', paymentsController.listPaymentsController);

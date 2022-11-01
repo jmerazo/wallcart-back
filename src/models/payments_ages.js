@@ -91,6 +91,55 @@ const agesList = async (date, result) => {
     })
 }
 
+// Age report
+const validityList = async (date, result) => {
+    await connection.query(`SELECT 
+							c.id, c.nit, e.nombre, e.cod_reg, r.nom_reg, 
+							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', DATE(DATE_ADD(NOW(), INTERVAL -1 YEAR)) THEN c.valor_factura END),0) A2022, 
+							COALESCE(SUM(CASE WHEN DATEDIFF(DATE(DATE_ADD(NOW(), INTERVAL -1 YEAR), DATE(DATE_ADD(NOW(), INTERVAL -2 YEAR)) THEN c.valor_factura END),0) A2021,
+							COALESCE(SUM(CASE WHEN DATEDIFF(DATE(DATE_ADD(NOW(), INTERVAL -2 YEAR), DATE(DATE_ADD(NOW(), INTERVAL -3 YEAR)) THEN c.valor_factura END),0) A2020, 
+							COALESCE(SUM(CASE WHEN DATEDIFF(DATE(DATE_ADD(NOW(), INTERVAL -3 YEAR), DATE(DATE_ADD(NOW(), INTERVAL -4 YEAR)) THEN c.valor_factura END),0) A2019, 
+							COALESCE(SUM(CASE WHEN DATEDIFF(DATE(DATE_ADD(NOW(), INTERVAL -4 YEAR), DATE(DATE_ADD(NOW(), INTERVAL -5 YEAR)) THEN c.valor_factura END),0) A2018, 
+							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fecha_envio) > 180 AND DATEDIFF('${date}', c.fecha_envio) < 361 THEN c.valor_factura END),0) edad5, 
+							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fecha_envio) > 360 THEN c.valor_factura END),0) edad6 
+							FROM cartera AS c 
+							INNER JOIN empresa AS e ON c.nit = e.nit 
+							INNER JOIN regimen AS r ON r.cod_reg = e.cod_reg
+							GROUP BY c.nit 
+							ORDER BY r.nom_reg`, 
+							(error, ages) => {
+        if(error){
+            return result(error)
+        }else{
+            return result(ages)
+        }
+    })
+}
+
+const validityAges = async (year, r) => {
+	//console.log("Year model: ", year);
+	await connection.query(`SELECT 
+							c.nit, 
+							e.nombre, 
+							e.cod_reg, 
+							r.nom_reg, 
+							SUM(valor_factura) AS A${year} 
+							FROM consolidadoc AS c 
+							INNER JOIN empresa AS e ON e.nit = c.nit 
+							INNER JOIN regimen AS r ON r.cod_reg = e.cod_reg 
+							WHERE c.periodo_anio = ${year} 
+							GROUP BY c.nit 
+							ORDER BY r.nom_reg`,
+							(e, val) => {
+								if(e){
+									return r(e)
+								}else{
+									console.log("Val: ", val)
+									return r(val)
+								}
+							})
+}
+
 module.exports = {
     agesMonthList,
     ages2MonthList,
@@ -98,5 +147,6 @@ module.exports = {
     ages4MonthList,
     ages6a12MonthList,
     ages12MonthList,
-    agesList    
+    agesList,
+	validityAges    
 };

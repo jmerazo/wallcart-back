@@ -26,6 +26,9 @@ router.post('/upload-excel', uploadFileHelper.uploadFile.single('upload-excel'),
 // Ages report
 router.get('/report/ages/:date', paymentsController.agesListController);
 
+// Validity report
+router.get('/validity/report', paymentsController.validityAgesController);
+
 // User
 router.get('/user/:id', authController.listUserByIdController);
 

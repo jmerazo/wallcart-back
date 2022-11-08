@@ -1,3 +1,4 @@
+const { json } = require('body-parser');
 const { end } = require('../db/con_db');
 const paymentsModel = require('../models/payment');
 const agesModel = require('../models/payments_ages');
@@ -78,31 +79,15 @@ const agesListController = async (req, res, next) => {
     })
 }
 
+
 const validityAgesController = async (req, res, next) => {
-    var currentYear= new Date().getFullYear();
-    var endYear = 1996;
-    var a = []
-    //console.log("Año actual: ",currentYear);
-    
-    //for(i=1996;1996<=currentYear;i++){
-    //    console.log(a.concat(i));
-//
-    //    //console.log("year ",year)
-    //}
-    
-    while(endYear <= currentYear){
-        //console.log(a.concat(endYear));
-        await agesModel.validityAges(endYear, (data, e) => {
-            if(e){
-                res.status(500).json({message:'Error: ', error})
-            }else{
-                a[endYear] = data;               
-            }
-        })
-        //console.log("A: ",a)
-        endYear++;
-    }    
-    res.status(200).json(a); 
+    await agesModel.validityModel((data, e) => {
+        if(e){
+            res.status(500).json({message:'Error', error})
+        }else{
+            res.status(200).json(data);
+        }
+    })    
 }
 
 module.exports = {

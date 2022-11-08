@@ -116,8 +116,43 @@ const validityList = async (date, result) => {
     })
 }
 
+const validatyOne = async (year) => {
+	console.log('Year: ', year)
+	connection.query(`SELECT 
+					c.nit, 
+					e.nombre, 
+					e.cod_reg, 
+					r.nom_reg, 
+					SUM(valor_factura) AS A${year} 
+					FROM consolidadoc AS c 
+					INNER JOIN empresa AS e ON e.nit = c.nit 
+					INNER JOIN regimen AS r ON r.cod_reg = e.cod_reg 
+					WHERE c.periodo_anio = ${year} 
+					GROUP BY c.nit 
+					ORDER BY r.nom_reg`,
+		(result, err) => {
+			if (err) {
+				return err;
+			} else {
+				console.log("Result: ", result);
+				return result;
+			}
+		});
+}
+
+async function validityModel(rs) {
+	var currentYear= new Date().getFullYear();
+	var endYear = 1996;
+	var a = []
+
+    for (endYear;endYear<=currentYear;endYear++) {
+		a[endYear] = validatyOne(endYear);		
+	}
+	return rs(a);
+}
+
 const validityAges = async (year, r) => {
-	//console.log("Year model: ", year);
+	console.log("Year model: ", year);
 	await connection.query(`SELECT 
 							c.nit, 
 							e.nombre, 
@@ -148,5 +183,6 @@ module.exports = {
     ages6a12MonthList,
     ages12MonthList,
     agesList,
-	validityAges    
+	validityAges,
+	validityModel   
 };

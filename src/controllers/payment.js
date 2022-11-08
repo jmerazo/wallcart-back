@@ -94,15 +94,23 @@ const validityAgesController = async (req, res, next) => {
         //console.log(a.concat(endYear));
         await agesModel.validityAges(endYear, (data, e) => {
             if(e){
-                res.status(500).json({message:'Error: ', error})
+                res.status(500).json({message:'Error sql controller: ', e})
             }else{
-                a[endYear] = data;               
+                a.concat(data);
+                console.log(data);
+                console.log("EndYear: ",endYear);
+                console.log("CurrentYear: ", currentYear);
+                if(endYear-1 == currentYear){
+                    return res.sendStatus(200);
+                }
+
+                if()                              
             }
         })
         //console.log("A: ",a)
+        console.log(endYear)
         endYear++;
     }    
-    res.status(200).json(a); 
 }
 
 module.exports = {

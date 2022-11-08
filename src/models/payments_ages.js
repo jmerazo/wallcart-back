@@ -116,6 +116,7 @@ const validityList = async (date, result) => {
     })
 }
 
+var val = []
 const validityAges = async (year, r) => {
 	//console.log("Year model: ", year);
 	await connection.query(`SELECT 
@@ -132,9 +133,9 @@ const validityAges = async (year, r) => {
 							ORDER BY r.nom_reg`,
 							(e, val) => {
 								if(e){
-									return r(e)
+									return r('Error sql: ',e)
 								}else{
-									console.log("Val: ", val)
+									//console.log("Val: ", val)
 									return r(val)
 								}
 							})

@@ -1,4 +1,5 @@
 const { json } = require('body-parser');
+const Flatted = require('flatted');
 const { end } = require('../db/con_db');
 const paymentsModel = require('../models/payment');
 const agesModel = require('../models/payments_ages');
@@ -81,13 +82,20 @@ const agesListController = async (req, res, next) => {
 
 
 const validityAgesController = async (req, res, next) => {
-    await agesModel.validityModel((data, e) => {
-        if(e){
-            res.status(500).json({message:'Error', error})
-        }else{
-            res.status(200).json(data);
-        }
-    })    
+    var currentYear= new Date().getFullYear();
+	var endYear = 1996;
+	var cvResult = []
+
+    for (endYear;endYear<=currentYear;endYear++) {
+		await agesModel.validityAgesModel(endYear)
+        .then((result) => {
+            cvResult = cvResult.concat(result);
+        })
+        .catch((e) => {
+            console.log('Error: ',e)
+        })	
+	}
+    res.status(200).json(cvResult)
 }
 
 module.exports = {

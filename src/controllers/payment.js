@@ -1,3 +1,4 @@
+const { json } = require('body-parser');
 const { end } = require('../db/con_db');
 const paymentsModel = require('../models/payment');
 const agesModel = require('../models/payments_ages');
@@ -78,39 +79,15 @@ const agesListController = async (req, res, next) => {
     })
 }
 
-const validityAgesController = async (req, res, next) => {
-    var currentYear= new Date().getFullYear();
-    var endYear = 1996;
-    var a = []
-    //console.log("Año actual: ",currentYear);
-    
-    //for(i=1996;1996<=currentYear;i++){
-    //    console.log(a.concat(i));
-//
-    //    //console.log("year ",year)
-    //}
-    
-    while(endYear <= currentYear){
-        //console.log(a.concat(endYear));
-        await agesModel.validityAges(endYear, (data, e) => {
-            if(e){
-                res.status(500).json({message:'Error sql controller: ', e})
-            }else{
-                a.concat(data);
-                console.log(data);
-                console.log("EndYear: ",endYear);
-                console.log("CurrentYear: ", currentYear);
-                if(endYear-1 == currentYear){
-                    return res.sendStatus(200);
-                }
 
-                if()                              
-            }
-        })
-        //console.log("A: ",a)
-        console.log(endYear)
-        endYear++;
-    }    
+const validityAgesController = async (req, res, next) => {
+    await agesModel.validityModel((data, e) => {
+        if(e){
+            res.status(500).json({message:'Error', error})
+        }else{
+            res.status(200).json(data);
+        }
+    })    
 }
 
 module.exports = {

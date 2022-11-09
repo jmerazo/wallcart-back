@@ -82,7 +82,8 @@ const agesListController = async (req, res, next) => {
 
 
 const validityAgesController = async (req, res, next) => {
-    var currentYear= new Date().getFullYear();
+    //var currentYear= new Date().getFullYear();
+    var currentYear = req.params.year;
 	var endYear = 1996;
 	var cvResult = []
 

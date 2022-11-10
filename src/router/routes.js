@@ -46,7 +46,7 @@ router.post('/portfolio/upload-excel/beads', uploadFileHelper.uploadFile.single(
     res.status(200).send('Successfull upload file xlsx')
 })
 router.post('/portfolio/upload-excel/payments', uploadFileHelper.uploadFile.single('p-upload-excel'), (req, res) => {
-    uploadFileHelper.portfPaymentsUpload(uploadFileHelper.filePathExFile + req.file.filename)
+    uploadFileHelper.validateFile(uploadFileHelper.filePathExFile + req.file.filename)
     res.status(200).send('Successfull upload file xlsx')
 })
 

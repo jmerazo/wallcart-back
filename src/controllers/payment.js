@@ -99,6 +99,16 @@ const validityAgesController = async (req, res, next) => {
     res.status(200).json(cvResult)
 }
 
+const uploadPaymentsController = async (res) => {
+    paymentsModel.uploadPaymentModel((rta, e) => {
+        if(e){
+            console.log('Error: ', e)
+        }else{
+            res.status(200).json(rta);
+        }
+    })
+}
+
 module.exports = {
     listPaymentsController,
     listPaymentByNitController,
@@ -106,5 +116,6 @@ module.exports = {
     listPaymentByDateController,
     listPaymentByParametersController,
     agesListController,
-    validityAgesController
+    validityAgesController,
+    uploadPaymentsController
 }

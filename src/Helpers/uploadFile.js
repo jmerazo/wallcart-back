@@ -63,18 +63,24 @@ const validateFile = (route) => {
     const dataFile = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
     for (const itemRow of dataFile) {
         var nit = itemRow['nit'];
+        //console.log('Nit: ', nit);
         var cto = itemRow['contrato'];
+        //console.log('Contrato: ', cto);
         var cta = itemRow['cuenta'];
-        var fec_cta = itemRow['fec_cta'];
+        //console.log('Cuenta: ', cta);
         var fra = itemRow['factura'];
+        //console.log('Factura: ', fra);
         var val_abo = itemRow['valor_abonado'];
-        var fec_abo = itemRow['fecha_abono'];
-        paymentModel.validatePaymentModel(nit, cto, cta, fec_cta, fra, val_abo, fec_abo, (dataInfo, e) => {
+        //console.log('Valor abonado: ', val_abo);
+        paymentModel.validatePaymentModel(nit, cto, cta, fra, val_abo, (e, dataInfo) => {
             if(e){
-                console.log('Error upload data file ==> ', e)
-                res.status(500).json({message:'Error upload data file ==> ', e})
+                console.log('Error validation data file ==> ', e)
+                //res.status(500).json({message:'Error upload data file ==> ', e})
             }else{
-                if(!dataInfo){
+                console.log('Data info: ', dataInfo)
+                if(dataInfo){
+                    paymentNot = paymentNot.concat(nit,cta,fra,val_abo);                    
+                }else{
                     const dataUploadDB = {
                         nit : itemRow['nit'],
                         contrato : itemRow['contrato'],
@@ -90,22 +96,23 @@ const validateFile = (route) => {
                         glosa_aceptada : itemRow['glosa_aceptada'],
                         fecha_glosa_aceptada : itemRow['fecha_glosa_aceptada']
                     }
+                    console.log("Data to upload: ", dataUploadDB);
                     paymentModel.uploadPaymentModel(dataUploadDB, (uploaded, e) => {
                         if(e){
                             console.log('Data validate upload DB error ==> ', e)
                             res.status(500).json({message: 'Data validate upload DB error ==> ',e})
                         }else{
                             console.log(uploaded);
-                            paymentSuccessfull = paymentSuccessfull.concat(nit,cta,fra,val_abo,fec_abo);                        
+                            paymentSuccessfull = paymentSuccessfull.concat(nit,cta,fra,val_abo);                      
                         }
                     })
-                }else{
-                    paymentNot = paymentNot.concat(nit,cta,fra,val_abo,fec_abo);
                 }
             }
         })  
              
     }
+    console.log('Pagos cargados: ', paymentSuccessfull);
+    console.log('Pagos duplicados: ', paymentNot);
     return paymentSuccessfull, paymentNot;
 }
 

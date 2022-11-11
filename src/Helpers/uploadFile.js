@@ -77,10 +77,9 @@ const validateFile = (route) => {
                 console.log('Error validation data file ==> ', e)
                 //res.status(500).json({message:'Error upload data file ==> ', e})
             }else{
-                console.log('Data info: ', dataInfo)
-                if(dataInfo){
-                    paymentNot = paymentNot.concat(nit,cta,fra,val_abo);                    
-                }else{
+                //console.log('Data info: ', dataInfo)
+                if(dataInfo.length === 0){
+                    console.log("Datainfo not: ",dataInfo)
                     const dataUploadDB = {
                         nit : itemRow['nit'],
                         contrato : itemRow['contrato'],
@@ -105,7 +104,10 @@ const validateFile = (route) => {
                             console.log(uploaded);
                             paymentSuccessfull = paymentSuccessfull.concat(nit,cta,fra,val_abo);                      
                         }
-                    })
+                    })                   
+                }else{
+                    console.log('Datainfo yes: ',dataInfo);
+                    paymentNot = paymentNot.concat(nit,cta,fra,val_abo);                     
                 }
             }
         })  

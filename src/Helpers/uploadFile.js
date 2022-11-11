@@ -51,6 +51,25 @@ const portfPaymentsUpload = (exFile) => {
     })
 }
 
+function dateSerielToFormat(serial) {
+    var utc_days  = Math.floor(serial - 25569);
+    var utc_value = utc_days * 86400;                                        
+    var date_info = new Date(utc_value * 1000);
+ 
+    var fractional_day = serial - Math.floor(serial) + 0.0000001;
+ 
+    var total_seconds = Math.floor(86400 * fractional_day);
+ 
+    var seconds = total_seconds % 60;
+ 
+    total_seconds -= seconds;
+ 
+    var hours = Math.floor(total_seconds / (60 * 60));
+    var minutes = Math.floor(total_seconds / 60) % 60;
+ 
+    return new Date(date_info.getFullYear(), date_info.getMonth(), date_info.getDate(), hours, minutes, seconds);
+ }
+
 const validateFile = (route) => {
     var paymentSuccessfull = [];
     var paymentNot = [];
@@ -80,6 +99,12 @@ const validateFile = (route) => {
                 //console.log('Data info: ', dataInfo)
                 if(dataInfo.length === 0){
                     console.log("Datainfo not: ",dataInfo)
+                    var fecha_cuenta_serial = itemRow['fecha_cuenta']
+                    var fecha_factura_serial = itemRow['fecha_factura']
+                    var fec_rad_factura_serial = itemRow['fec_rad_factura']
+                    var fecha_abono_serial = itemRow['fecha_abono']
+                    var fecha_glosa_inicial = itemRow['fecha_glosa_inicial']
+                    var fecha_glosa_aceptada_serial = itemRow['fecha_glosa_aceptada']
                     const dataUploadDB = {
                         nit : itemRow['nit'],
                         contrato : itemRow['contrato'],

@@ -64,7 +64,8 @@ const validatePaymentModel = async (nit, cto, cta, fra, val_abo, result) => {
 	//console.log('Cuenta: ',cta)
 	//console.log('Factura: ',fra)
 	//console.log('Valor abonado: ', val_abo)
-	await connection.query(`SELECT 
+	return new Promise((resolve, reject) => {
+		connection.query(`SELECT 
 							nit, contrato, cuenta, fecha_cuenta, factura, valor_total_factura, valor_abonado, fecha_abono 
 							FROM cartera 
 							WHERE nit = '${nit}' 
@@ -72,25 +73,24 @@ const validatePaymentModel = async (nit, cto, cta, fra, val_abo, result) => {
 							AND cuenta = '${cta}' 
 							AND factura = "${fra}" 
 							AND valor_abonado = '${val_abo}' 
-							`, (error, validatePay) => {
-		if(error){
-			return result(error, null);
-		}else{
-			//console.log('Data model search: ', validatePay)
-			return result(null, validatePay);
-		}
+							`, (e, val) => {
+								if(e){
+									return reject(e)
+								}
+								resolve(val)
+		})
+		
 	})
 }
 
-const uploadPaymentModel = async (dataUpload, result) => {
-	await connection.query('INSERT INTO cartera SET ?', dataUpload, (error, upload) => {
-		if(error){			
-			return result(error, null);
-		}else{
-			console.log("Data upload: ",upload.insertId);
-			return result(null, upload.insertId);
-		}
-	});
+const uploadPaymentModel = async (dataUpload) => {
+	return new Promise((resolve, reject) => {
+		connection.query('INSERT INTO cartera SET ?', dataUpload, (e, val) => {
+			if(e){
+				return reject(e)
+			}
+			resolve(val)})
+	})
 }
 
 

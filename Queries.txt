@@ -4,3 +4,11 @@ Restar fechas: https://www.techonthenet.com/mysql/functions/datediff.php
 Reporte:
     -Edades: ok
     -Vigencias: por hacer, años
+
+
+
+Por hacer:
+- Eliminar el archivo xlsx una vez se cargue los pagos
+- Dar el total del saldo al cargar los pagos
+- Validar en tabla cuentas si existe la factura una vez validada en cartera y no existe
+- Permisos para servidor local

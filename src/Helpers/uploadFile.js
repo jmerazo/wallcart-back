@@ -250,7 +250,7 @@ async function validateUpFile(route){
                     console.log(`Found ${saldo_cuenta} > ${valor_a_abonar} OR ${valor_cuenta_s} > ${valor_a_abonar}`)
 
                     // 700 > 500  ==> Si cumple condición OR 500 > 700 no cumple
-                    if(saldo_cuenta > valor_a_abonar || valor_cuenta_s > valor_a_abonar){ //INSERT nit, contrato, cuenta, fecha_cuenta, factura, fecha_factura, fec_rad_factura, valor_abonado, fecha_abono
+                    if(valor_cuenta_s > valor_a_abonar){ //INSERT nit, contrato, cuenta, fecha_cuenta, factura, fecha_factura, fec_rad_factura, valor_abonado, fecha_abono
                         const dataUploadDB = {
                             nit : itemRow['nit'],
                             contrato : itemRow['contrato'],

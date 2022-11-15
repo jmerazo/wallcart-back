@@ -46,9 +46,9 @@ router.post('/portfolio/upload-excel/beads', uploadFileHelper.uploadFile.single(
     res.status(200).send('Successfull upload file xlsx')
 })
 router.post('/portfolio/upload-excel/payments', uploadFileHelper.uploadFile.single('p-upload-excel'), (req, res, next) => {
-    uploadFileHelper.validateFile(uploadFileHelper.filePathExFile + req.file.filename)
+    uploadFileHelper.validateUpFile(uploadFileHelper.filePathExFile + req.file.filename)
     .then((result) => {
-        console.log('Result: ', result)
+        //console.log('Result: ', result)
         res.status(200).json(result)
         //setTimeout(()=>{
         //    console.log('Result: ', result)

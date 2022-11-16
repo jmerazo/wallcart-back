@@ -188,28 +188,28 @@ async function validateUpFile(route){
             var val_abo = itemRow['valor_abonado'];
 
             var fecha_cuenta_ser = itemRow['fecha_cuenta'];
-            if(fecha_cuenta_ser == ""){
+            if(fecha_cuenta_ser == "" || fecha_abono_ser == undefined){
                 var fecha_cuenta_cv = null;
             }else{
                 var fecha_cuenta_cv = dateSerielToFormat(fecha_cuenta_ser);
             }
             
             var fecha_factura_ser = itemRow['fecha_factura']
-            if(fecha_factura_ser == ""){
+            if(fecha_factura_ser == "" || fecha_abono_ser == undefined){
                 var fecha_factura_cv = null;
             }else{
                 var fecha_factura_cv = dateSerielToFormat(fecha_factura_ser);
             }
             
             var fec_rad_factura_ser = itemRow['fec_rad_factura'];
-            if(fec_rad_factura_ser == ""){
+            if(fec_rad_factura_ser == "" || fecha_abono_ser == undefined){
                 var fec_rad_factura_cv = null;
             }else{
                 var fec_rad_factura_cv = dateSerielToFormat(fec_rad_factura_ser);
             }
             
             var fecha_abono_ser = itemRow['fecha_abono'];
-            if(fecha_abono_ser == ""){
+            if(fecha_abono_ser == "" || fecha_abono_ser == undefined){
                 var fecha_abono_cv = null;
             }else{
                 var fecha_abono_cv = dateSerielToFormat(fecha_abono_ser);
@@ -217,7 +217,7 @@ async function validateUpFile(route){
             
             var fecha_glosa_inicial_ser = itemRow['fgi'];
             console.log(fecha_glosa_inicial_ser);
-            if(fecha_glosa_inicial_ser == ""){
+            if(fecha_glosa_inicial_ser == "" || fecha_abono_ser == undefined){
                 var fecha_glosa_inicial_cv = null;
             }else{
                 var fecha_glosa_inicial_cv = dateSerielToFormat(fecha_glosa_inicial_ser);
@@ -225,7 +225,7 @@ async function validateUpFile(route){
             
             var fecha_glosa_aceptada_ser = itemRow['fga'];
             console.log(fecha_glosa_aceptada_ser)
-            if(fecha_glosa_aceptada_ser == ""){
+            if(fecha_glosa_aceptada_ser == "" || fecha_abono_ser == undefined){
                 var fecha_glosa_aceptada_cv = null;                
             }else{
                 var fecha_glosa_aceptada_cv = dateSerielToFormat(fecha_glosa_aceptada_ser);
@@ -234,20 +234,25 @@ async function validateUpFile(route){
             paymentModel.validatePayUpModel(nit, cto, cta, fra)
             .then((dataInfo) => {
                 //console.log(dataInfo)
-                var valor_a_abonar = itemRow['valor_abonado']; // 500
+                var valor_a_abonar = itemRow['valor_abonado'] + itemRow['glosa_aceptada']; // 500
                 if(dataInfo.length != 0){
+                    
                     if(dataInfo[0].saldo == ""){
                         var valor_cuenta_s = dataInfo[0].valor_cuenta; // 1000
                     }else{
                         var valor_cuenta_s = dataInfo[0].saldo; 
                     }
-                    console.log('Valor_cuenta: ', valor_cuenta_s)                                       
+                    console.log('Valor_cuenta: ', valor_cuenta_s)
+                    
                     var valor_abonos = dataInfo[0].valor_abonado // 200
-                    console.log('Valor_abonos: ', valor_abonos, ' - ', dataInfo[0].valor_abonado)
+                    console.log('Valor_abonos: ', valor_abonos)
+
                     var valor_glosas_aceptadas = dataInfo[0].glosa_aceptada; // 100
-                    console.log('Valor_glosas_aceptadas: ', valor_glosas_aceptadas, ' - ', dataInfo[0].glosa_aceptada)
-                    var saldo_cuenta = valor_cuenta_s - valor_abonos - valor_glosas_aceptadas; // 1000 - 200 - 100 = 700
-                    console.log(`Found ${saldo_cuenta} > ${valor_a_abonar} OR ${valor_cuenta_s} > ${valor_a_abonar}`)
+                    console.log('Valor_glosas_aceptadas: ', valor_glosas_aceptadas)
+
+                    var saldo_cuenta = valor_cuenta_s - itemRow['valor_abonado'] - itemRow['glosa_aceptada']; // 1000 - 200 - 100 = 700
+                    
+                    console.log(`Found ${valor_cuenta_s} > ${valor_a_abonar}`)
 
                     // 700 > 500  ==> Si cumple condición OR 500 > 700 no cumple
                     if(valor_cuenta_s > valor_a_abonar){ //INSERT nit, contrato, cuenta, fecha_cuenta, factura, fecha_factura, fec_rad_factura, valor_abonado, fecha_abono

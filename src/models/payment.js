@@ -104,11 +104,14 @@ const validatePayUpModel = async (nit, cto, cta, fra) => {
 							WHERE ca.nit = '${nit}' 
 							AND ca.contrato = '${cto}' 
 							AND ca.cuenta = '${cta}' 
-							AND ca.factura = "${fra}" 
+							AND ca.factura = "${fra}"
+							ORDER BY ca.fecha_abono 
+							ASC LIMIT 1 
 							`, (e, val) => {
 								if(e){
 									return reject(e)
 								}
+								console.log('Validation beads: ',val)
 								resolve(val)
 		})
 		

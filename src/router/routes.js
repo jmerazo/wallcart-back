@@ -42,10 +42,15 @@ router.get('/portfolio/ages/:date', portfolioController.listAgesPortfolioControl
 router.get('/portfolio/params/:col/:param', portfolioController.listParametersController);
 router.get('/portfolio/consolidated', portfolioController.listConsolidatedController);
 router.post('/portfolio/upload-excel/beads', uploadFileHelper.uploadFile.single('p-upload-excel'), (req, res) => {
-    uploadFileHelper.portfolioUpload(uploadFileHelper.filePathExFile + req.file.filename)
-    res.status(200).send('Successfull upload file xlsx')
+    uploadFileHelper.beadValidateFileUp(uploadFileHelper.filePathExFile + req.file.filename)
+    .then((result) => {
+        res.status(200).json(result)    
+    })
+    .catch((e) => {
+        console.log('Error: ',e)
+    });
 })
-router.post('/portfolio/upload-excel/payments', uploadFileHelper.uploadFile.single('p-upload-excel'), (req, res, next) => {
+router.post('/portfolio/upload-excel/payments', uploadFileHelper.uploadFile.single('p-upload-excel'), (req, res) => {
     uploadFileHelper.validateUpFile(uploadFileHelper.filePathExFile + req.file.filename)
     .then((result) => {
         //console.log('Result: ', result)

@@ -118,6 +118,34 @@ const validatePayUpModel = async (nit, cto, cta, fra) => {
 	})
 }
 
+const uploadBeadsModel = async (dataUpload) => {
+	return new Promise((resolve, reject) => {
+		connection.query('INSERT INTO cuentas SET ?', dataUpload, (e, val) => {
+			if(e){
+				return reject(e)
+			}
+			resolve(val)})
+	})
+}
+
+const validateBeadUpModel = async (nit, cto, cta) => {
+	return new Promise((resolve, reject) => { 
+		connection.query(`SELECT 
+							* 
+							FROM cuenta
+							WHERE nit= '${nit}' 
+							AND contrato = '${cto}' 
+							AND cuenta = '${cta}'
+							`, (e, val) => {
+								if(e){
+									return reject(e)
+								}
+								resolve(val)
+		})
+		
+	})
+}
+
 const beadList = async (cta) => {
 	//console.log('Bead search: ', cta)
 	return new Promise((resolve, reject) => { 
@@ -142,5 +170,7 @@ module.exports = {
 	validatePaymentModel,
 	uploadPaymentModel,
 	validatePayUpModel,
-	beadList
+	beadList,
+	validateBeadUpModel,
+	uploadBeadsModel
 };

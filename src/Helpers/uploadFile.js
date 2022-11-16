@@ -144,7 +144,7 @@ async function validateFile(route){
                     paymentModel.uploadPaymentModel(dataUploadDB)
                     .then((uploaded) => {
                         console.log('No existe y se carga: ',uploaded);
-                        paymentSuccessfull = paymentSuccessfull.concat(uploaded);                     
+                        paymentSuccessfull = paymentSuccessfull.concat(dataUploadDB);                     
                     })
                     .catch((e) => {
                         console.log('Data validate upload DB error ==> ', e)
@@ -159,17 +159,66 @@ async function validateFile(route){
     })
 }
 
-function beadListF(cta){
-        paymentModel.beadList(cta)
-        .then((data) => {
-            console.log('Bead controller found: ',data[0].valor_cuenta)
-            saldo_cuenta = data[0].valor_cuenta;
-            return saldo_cuenta
-        })
-        .catch((e) => {
-            console.log(`Bead not found: `, e)
-            reject(e)
-        })
+async function beadValidateFileUp(route){
+    var beadsSuccessfull = [];
+    var beadsNot = [];
+    const workbook = XLSX.readFile(route);
+    const workbookSheets = workbook.SheetNames;
+    const sheet = workbookSheets[0];
+    const beadFile = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
+    return new Promise((resolve, reject) => {
+        for (const itemRow of beadFile) {
+            var nit = itemRow['nit'];
+            var cto = itemRow['contrato'];
+            var cta = itemRow['cuenta'];
+
+            var fecha_cuenta_ser = itemRow['fecha_cuenta']
+            if(fecha_cuenta_ser == ""){
+                var fecha_cuenta_cv = null;
+            }else{
+                var fecha_cuenta_cv = dateSerielToFormat(fecha_cuenta_ser);
+            }
+            
+            var fecha_rad_cuenta_ser = itemRow['fec_rad_cuenta']
+            if(fecha_rad_cuenta_ser == ""){
+                var fec_rad_cuenta_cv = null;
+            }else{
+                var fec_rad_cuenta_cv = dateSerielToFormat(fecha_rad_cuenta_ser);
+            }           
+            
+            paymentModel.validateBeadUpModel(nit, cto, cta)
+            .then((dataInfo) => {
+                if(dataInfo.length != 0){
+                    beadsNot = beadsNot.concat(dataInfo)
+                }else{
+                    const beadsUpload = {
+                        nit : itemRow['nit'],
+                        contrato : itemRow['contrato'],
+                        regimen : itemRow['regimen'],
+                        modalidad : itemRow['modalidad'],
+                        cuenta : itemRow['cuenta'],
+                        fecha_cuenta : fecha_cuenta_cv,
+                        fecha_rad_cuenta : fec_rad_cuenta_cv,
+                        valor_cuenta : itemRow['valor_cuenta']
+                    }
+
+                    paymentModel.uploadBeadsModel(beadsUpload)
+                    .then((uploaded) => {
+                        console.log('Loaded: ',uploaded);
+                        beadsSuccessfull = beadsSuccessfull.concat(beadsUpload);                     
+                    })
+                    .catch((e) => {
+                        console.log('Data validate upload DB error ==> ', e)
+                        reject(e);
+                    })
+                }
+                setTimeout(() => {resolve({beadsSuccessfull : beadsSuccessfull, beadsNot : beadsNot}); },2000) 
+            })
+            .catch((e) => {
+                return e;
+            })                                             
+        }       
+    })
 }
 
 async function validateUpFile(route){
@@ -338,6 +387,7 @@ async function validateUpFile(route){
         }       
     })
 }
+
 module.exports = {
     uploadFile,
     importFileToDb,
@@ -345,5 +395,6 @@ module.exports = {
     portfolioUpload,
     portfPaymentsUpload,
     validateFile,
-    validateUpFile
+    validateUpFile,
+    beadValidateFileUp
 }

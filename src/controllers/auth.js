@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const userAuthModel = require('../models/auth');
-const { response } = require('express');
 
 const userAuthCreate = async (req, res) => {
     try {        

@@ -12,3 +12,14 @@ Por hacer:
 - Dar el total del saldo al cargar los pagos
 - Validar en tabla cuentas si existe la factura una vez validada en cartera y no existe
 - Permisos para servidor local
+
+
+Agregar
+- Crear empresas
+- Crear contrato / validar si existe empresa
+- Cargar cuentas - falta validar que exista contrato
+- Reporte completo de la tabla cartera
+- Grafico abonos por regimen
+
+// PARA REPORTE DE EDADES SE USA FECHA RADICACION FACTURA
+// PARA REPORTE VIGENCIAS SE USA FECHA DE FACTURA

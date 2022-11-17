@@ -129,10 +129,11 @@ const uploadBeadsModel = async (dataUpload) => {
 }
 
 const validateBeadUpModel = async (nit, cto, cta) => {
+	console.log('Model sql: ',nit," - ",cto," - ",cta)
 	return new Promise((resolve, reject) => { 
 		connection.query(`SELECT 
 							* 
-							FROM cuenta
+							FROM cuentas
 							WHERE nit= '${nit}' 
 							AND contrato = '${cto}' 
 							AND cuenta = '${cta}'
@@ -140,6 +141,7 @@ const validateBeadUpModel = async (nit, cto, cta) => {
 								if(e){
 									return reject(e)
 								}
+								console.log('Model data return: ', val)
 								resolve(val)
 		})
 		

@@ -66,6 +66,9 @@ const ages12MonthList = async function(result) {
 	});
 }
 
+// PARA REPORTE DE EDADES SE USA FECHA RADICACION FACTURA
+// PARA REPORTE VIGENCIAS SE USA FECHA DE FACTURA
+
 // Age report
 const agesList = async (date, result) => {
     await connection.query(`SELECT 

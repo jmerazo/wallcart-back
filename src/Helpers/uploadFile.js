@@ -160,6 +160,7 @@ async function validateFile(route){
 }
 
 async function beadValidateFileUp(route){
+    console.log('Route: ', route)
     var beadsSuccessfull = [];
     var beadsNot = [];
     const workbook = XLSX.readFile(route);
@@ -172,6 +173,7 @@ async function beadValidateFileUp(route){
             var cto = itemRow['contrato'];
             var cta = itemRow['cuenta'];
 
+            console.log(nit," - ",cto," - ",cta)
             var fecha_cuenta_ser = itemRow['fecha_cuenta']
             if(fecha_cuenta_ser == ""){
                 var fecha_cuenta_cv = null;
@@ -188,7 +190,9 @@ async function beadValidateFileUp(route){
             
             paymentModel.validateBeadUpModel(nit, cto, cta)
             .then((dataInfo) => {
+                console.log('Data info returned: ', dataInfo)
                 if(dataInfo.length != 0){
+                    console.log('Beads not loadedd: ', dataInfo)
                     beadsNot = beadsNot.concat(dataInfo)
                 }else{
                     const beadsUpload = {
@@ -198,10 +202,10 @@ async function beadValidateFileUp(route){
                         modalidad : itemRow['modalidad'],
                         cuenta : itemRow['cuenta'],
                         fecha_cuenta : fecha_cuenta_cv,
-                        fecha_rad_cuenta : fec_rad_cuenta_cv,
+                        fec_rad_cuenta : fec_rad_cuenta_cv,
                         valor_cuenta : itemRow['valor_cuenta']
                     }
-
+                    console.log('Beads json: ', beadsUpload)
                     paymentModel.uploadBeadsModel(beadsUpload)
                     .then((uploaded) => {
                         console.log('Loaded: ',uploaded);

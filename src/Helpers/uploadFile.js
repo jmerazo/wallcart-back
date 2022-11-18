@@ -159,6 +159,15 @@ async function validateFile(route){
     })
 }
 
+function deleteFileAfterUpload(route){
+    try{
+        fs.unlinkSync(route)
+        console.log('File removed: ', route)
+    }catch(err){
+        console.error('Something wrong happened removing the file', err)
+    }    
+}
+
 async function beadValidateFileUp(route){
     console.log('Route: ', route)
     var beadsSuccessfull = [];
@@ -223,6 +232,7 @@ async function beadValidateFileUp(route){
             })                                             
         }       
     })
+    deleteFileAfterUpload(route);
 }
 
 async function validateUpFile(route){
@@ -390,6 +400,7 @@ async function validateUpFile(route){
             })                     
         }       
     })
+    deleteFileAfterUpload(route);
 }
 
 module.exports = {

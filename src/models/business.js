@@ -31,12 +31,11 @@ const deleteBusinessModel = (nit) => {
 }
 
 // List all business
-const listBusinessAllModel = () =>{
-    return new Promise((resolve, reject) => {
-        connection.query(`SELECT * FROM business`, (e, business) => {
-            if(e){return reject('Status 500, not create',e)}
-            resolve(business)
-        })
+const listBusinessAllModel = async (result) =>{
+    await connection.query(`SELECT * FROM business`, (e, business) => {
+        if(e){return result('Status 500, not create',e)}
+        console.log('Business model: ',business)
+        return result(business)
     })
 }
 

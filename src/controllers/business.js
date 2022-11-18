@@ -2,28 +2,40 @@ const { json } = require('body-parser');
 const businessModel = require('../models/business');
 
 const addBusinessController = async (req, res) => {
-    var { nit, nombre, cod_reg, celular, correo, direccion, ciudad, departamento } = req.body;
+    var { nit, nombre, regimen, celular, correo, direccion, ciudad, departamento } = req.body;
+    console.log('Nit: ',req.body.nit)
+    console.log('Nombre: ', req.body.nombre)
+    console.log('Regimen: ',req.body.regimen)
+    console.log('Celular: ', req.body.celular)
+    console.log('Correo: ', req.body.correo)
+    console.log('Dirección: ', req.body.direccion)
+    console.log('Ciudad: ', req.body.ciudad)
+    console.log('Departamento: ', req.body.departamento)
 
     businessModel.listBusinessByIdModel(nit)
     .then((search) => {
-        if(search.lenght != 0){
-            return json({message: 'Already exits'})
-        }
-        
-        const businessData = {
-            nit : nit,
-            nombre : nombre,
-            cod_reg : cod_reg,
-            celular : celular,
-            correo : correo,
-            direccion : direccion,
-            ciudad : ciudad,
-            departamento : departamento
-        }
-        businessModel.createBusinessModel(businessData, (add, e) => {
-            if(e){console.log('Error: ', e); res.status(500).json({message:'Error: ', e})}
-            res.status(200).json(add);
-        })
+        console.log('Search: ',search)
+        if(search.length == 0){
+            const businessData = {
+                nit : nit,
+                nombre : nombre,
+                cod_reg : regimen,
+                celular : celular,
+                correo : correo,
+                direccion : direccion,
+                ciudad : ciudad,
+                departamento : departamento
+            }
+    
+            console.log(businessData)
+            businessModel.createBusinessModel(businessData, (add, e) => {
+                if(e){console.log('Error: ', e); res.status(500).json({message:'Error: ', e})}
+                res.status(200).json(add);
+            })
+            
+        }else{
+            return json({message: 'Already exits'})            
+        }        
     })
     .catch((e) => {
         console.log(e)
@@ -31,11 +43,11 @@ const addBusinessController = async (req, res) => {
 }
 
 const updateBusinessController = (req, res) => {
-    var { nit, nombre, cod_reg, celular, correo, direccion, ciudad, departamento } = req.body;
+    var { nit, nombre, regimen, celular, correo, direccion, ciudad, departamento } = req.body;
     const businessData = {
         nit : nit,
         nombre : nombre,
-        cod_reg : cod_reg,
+        cod_reg : regimen,
         celular : celular,
         correo : correo,
         direccion : direccion,
@@ -59,10 +71,14 @@ const deleteBusinessController = (req, res) => {
 
 }
 
-const listBusinessAllController = (res) => {
-    businessModel.listBusinessAllModel((business, e) => {
-        if(e){ res.status(500).json({message: 'Error list all: ', e})}
-        res.status(200).json(business)
+const listBusinessAllController = async (req, res, next) => {
+    await businessModel.listBusinessAllModel((dataBusiness, e) => {
+        if(e){
+            res.status(500).json({message: 'Error list business: ',e})
+        }else{
+            console.log('Business list controller: ',dataBusiness)
+            res.status(200).json(dataBusiness)
+        }
     })
 }
 

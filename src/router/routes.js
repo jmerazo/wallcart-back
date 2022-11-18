@@ -7,6 +7,7 @@ const portfolioController = require('../controllers/portfolio')
 const cors = require('cors')
 const corsOptions = require('../Helpers/cors');
 const businessController = require('../controllers/business');
+const { json } = require('body-parser');
 
 // Route information to connect API
 router.get('/', cors(corsOptions), (req, res) => {res.status(200).json({ message: 'Connect to our API'})});
@@ -67,7 +68,7 @@ router.post('/portfolio/upload-excel/payments', uploadFileHelper.uploadFile.sing
 })
 
 // Business
-router.post('/business/add', businessController.addBusinessController);
+router.post('/business/add', businessController.addBusinessController)
 router.get('/business/all', businessController.listBusinessAllController);
 router.get('/business/:nit', businessController.listBusinessByNitController);
 router.put('/business/update/:id', businessController.updateBusinessController);

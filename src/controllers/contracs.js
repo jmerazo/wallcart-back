@@ -100,10 +100,21 @@ const listContracsByNitController = (req, res) => {
         res.status(200).json(contrac)
     })
 }
+
+const listContracsLikeController = (req, res) => {
+    var filter = req.params.filter;
+    var params = req.params.params;
+    contracsModel.listContracsLike(filter, params, (contracs, e) => {
+        if(e) { res.status(500).json({message: 'Error search business by nit: ',e})}
+        res.status(200).json(contracs)
+    })
+}
+
 module.exports = {
     addContracsController,
     updateContracsController,
     deleteContracsController,
     listContracsAllController,
-    listContracsByNitController
+    listContracsByNitController,
+    listContracsLikeController
 }

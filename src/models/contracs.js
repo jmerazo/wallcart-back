@@ -47,7 +47,6 @@ const listContracsAllModel = async (result) =>{
                             INNER JOIN business AS b 
                             ON c.nit = b.nit`, (e, contracs) => {
         if(e){return result('Status 500, not create',e)}
-        console.log('Business model: ',contracs)
         return result(contracs)
     })
 }
@@ -62,10 +61,19 @@ const listContracsByNitModel =  (nit) => {
     })
 }
 
+// List contracs like
+const listContracsLike = (filter, params, result) => {
+    connection.query(`SELECT * FROM contratos WHERE ${filter} LIKE '%${params}%'`, (e, contracs) => {
+        if(e){ return result(e) }
+        return result(contracs)
+    })
+}
+
 module.exports = {
     createContracsModel,
     updateContracsModel,
     deleteContracsModel,
 	listContracsByNitModel,
-    listContracsAllModel
+    listContracsAllModel,
+    listContracsLike
 };

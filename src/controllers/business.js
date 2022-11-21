@@ -89,10 +89,22 @@ const listBusinessByNitController = (req, res) => {
         res.status(200).json(busine)
     })
 }
+
+const listBusinessLikeByNameController = (req, res) => {
+    var filter = req.params.filter;
+    var params = req.params.params;
+    businessModel.listBusinessLikeByName(filter, params, (busines, e) => {
+        if(e) { res.status(500).json({message: 'Error search business by nit: ',e})}
+        res.status(200).json(busines)
+    })
+}
+
+
 module.exports = {
     addBusinessController,
     updateBusinessController,
     deleteBusinessController,
     listBusinessAllController,
-    listBusinessByNitController
+    listBusinessByNitController,
+    listBusinessLikeByNameController
 }

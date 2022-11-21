@@ -71,6 +71,7 @@ router.post('/portfolio/upload-excel/payments', uploadFileHelper.uploadFile.sing
 // Business
 router.post('/business/add', businessController.addBusinessController)
 router.get('/business/all', businessController.listBusinessAllController);
+router.get('/business/filter/:filter/:params', businessController.listBusinessLikeByNameController)
 router.get('/business/:nit', businessController.listBusinessByNitController);
 router.put('/business/update/:id', businessController.updateBusinessController);
 router.delete('/business/delete/:id', businessController.deleteBusinessController);
@@ -78,6 +79,7 @@ router.delete('/business/delete/:id', businessController.deleteBusinessControlle
 // Contracs
 router.post('/contracs/add', contracsController.addContracsController)
 router.get('/contracs/all', contracsController.listContracsAllController);
+router.get('/contracs/filter/:filter/:params', contracsController.listContracsLikeController);
 router.get('/contracs/:nit', contracsController.listContracsByNitController);
 router.put('/contracs/update/:id', contracsController.updateContracsController);
 router.delete('/contracs/delete/:id', contracsController.deleteContracsController);

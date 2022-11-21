@@ -49,10 +49,19 @@ const listBusinessByIdModel =  (nit) => {
     })
 }
 
+// List business like
+const listBusinessLikeByName = (filter, params, result) => {
+    connection.query(`SELECT * FROM business WHERE ${filter} LIKE '%${params}%'`, (e, busines) => {
+        if(e){ return result(e) }
+        return result(busines)
+    })
+}
+
 module.exports = {
     createBusinessModel,
     updateBusinessModel,
     deleteBusinessModel,
 	listBusinessByIdModel,
-    listBusinessAllModel
+    listBusinessAllModel,
+    listBusinessLikeByName
 };

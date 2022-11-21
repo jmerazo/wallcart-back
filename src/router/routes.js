@@ -7,7 +7,8 @@ const portfolioController = require('../controllers/portfolio')
 const cors = require('cors')
 const corsOptions = require('../Helpers/cors');
 const businessController = require('../controllers/business');
-const { json } = require('body-parser');
+const utilsController = require('../controllers/utils');
+const contracsController = require('../controllers/contracs');
 
 // Route information to connect API
 router.get('/', cors(corsOptions), (req, res) => {res.status(200).json({ message: 'Connect to our API'})});
@@ -73,5 +74,18 @@ router.get('/business/all', businessController.listBusinessAllController);
 router.get('/business/:nit', businessController.listBusinessByNitController);
 router.put('/business/update/:id', businessController.updateBusinessController);
 router.delete('/business/delete/:id', businessController.deleteBusinessController);
+
+// Contracs
+router.post('/contracs/add', contracsController.addContracsController)
+router.get('/contracs/all', contracsController.listContracsAllController);
+router.get('/contracs/:nit', contracsController.listContracsByNitController);
+router.put('/contracs/update/:id', contracsController.updateContracsController);
+router.delete('/contracs/delete/:id', contracsController.deleteContracsController);
+
+// Utils
+router.get('/utils/regimen', utilsController.listRegimenController);
+router.get('/utils/departments', utilsController.listDepartmentsController);
+router.get('/utils/cities/:code', utilsController.listCitiesController);
+router.get('/utils/export/ages', paymentsController.exportAges);
 
 module.exports = router;

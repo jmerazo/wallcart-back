@@ -143,6 +143,27 @@ const validityAgesModel = async (year) => {
 	})
 }
 
+const validityAgesNewModel = async (dateInit,dateEnd) => {
+	connection.query(`SELECT 
+					c.nit, 
+					e.nombre, 
+					e.cod_reg, 
+					r.nom_reg, 
+					c.periodo_anio AS vigencia, 
+					SUM(valor_factura) AS valor 
+					FROM consolidadoc AS c 
+					INNER JOIN empresa AS e ON e.nit = c.nit 
+					INNER JOIN regimen AS r ON r.cod_reg = e.cod_reg 
+					GROUP BY c.periodo_anio, c.nit
+					ORDER BY c.periodo_anio
+					WHERE fecha_factura BETWEEN ${dateInit} AND ${dateEnd}`, (e, val) => {
+						if(e){
+							return reject(e)
+						}
+						resolve(val)
+					})
+}
+
 module.exports = {
     agesMonthList,
     ages2MonthList,
@@ -151,5 +172,6 @@ module.exports = {
     ages6a12MonthList,
     ages12MonthList,
     agesList,
-	validityAgesModel
+	validityAgesModel,
+	validityAgesNewModel
 };

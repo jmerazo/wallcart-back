@@ -1,8 +1,8 @@
-const { json } = require('body-parser');
-const Flatted = require('flatted');
-const { end } = require('../db/con_db');
+const fs = require('fs');
+const carbone = require('carbone');
 const paymentsModel = require('../models/payment');
 const agesModel = require('../models/payments_ages');
+const uploadPath = require('../Helpers/uploadFile');
 
 const listPaymentsController = async (req, res, next) => {
     await paymentsModel.listPayments(function(err, data){
@@ -99,6 +99,19 @@ const validityAgesController = async (req, res, next) => {
     res.status(200).json(cvResult)
 }
 
+const exportAges = async (req, res) => {
+    let dateNow = new Date();
+    let data = req.body.data;
+    console.log(data)
+    let filePathFormat = uploadPath.filePathFormat + 'format_validity.xlsx';
+    
+    carbone.render(filePathFormat, data, function(err, result){
+        if (err) return console.log(err);
+        fs.writeFileSync(`result_format_validity.xlsx`, result);
+        res.send(result)
+    });
+}
+
 const uploadPaymentsController = async (res) => {
     paymentsModel.uploadPaymentModel((rta, e) => {
         if(e){
@@ -117,5 +130,6 @@ module.exports = {
     listPaymentByParametersController,
     agesListController,
     validityAgesController,
-    uploadPaymentsController
+    uploadPaymentsController,
+    exportAges
 }

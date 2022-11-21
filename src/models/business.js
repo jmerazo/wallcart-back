@@ -21,9 +21,9 @@ const updateBusinessModel = (nit, businessData) => {
 }
  
 //Delete business by Id
-const deleteBusinessModel = (nit) => {
+const deleteBusinessModel = (id) => {
     return new Promise((resolve, reject) => {
-        connection.query(`DELETE FROM business WHERE nit = ${nit}`, (e, success) =>{
+        connection.query(`DELETE FROM business WHERE id = ${id}`, (e, success) =>{
             if(e){return reject(e)}
 			resolve(success)
         });

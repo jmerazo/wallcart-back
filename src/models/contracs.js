@@ -51,10 +51,20 @@ const listContracsAllModel = async (result) =>{
     })
 }
 
-// List business by id
+// List business by nit
 const listContracsByNitModel =  (nit) => {
     return new Promise((resolve, reject) => {
         connection.query(`SELECT * FROM contratos WHERE nit = ${nit}`, (e, contrac) => {
+            if(e){ reject(e) } 
+            resolve(contrac)
+        })
+    })
+}
+
+// List business by cto
+const listContracsByCtoModel =  (cto, nit) => {
+    return new Promise((resolve, reject) => {
+        connection.query(`SELECT * FROM contratos WHERE num_cto = ${cto} AND nit = ${nit}`, (e, contrac) => {
             if(e){ reject(e) } 
             resolve(contrac)
         })
@@ -75,5 +85,6 @@ module.exports = {
     deleteContracsModel,
 	listContracsByNitModel,
     listContracsAllModel,
-    listContracsLike
+    listContracsLike,
+    listContracsByCtoModel
 };

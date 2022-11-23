@@ -94,8 +94,33 @@ const agesList = async (date, result) => {
     })
 }
 
-// Age report
-const validityList = async (date, result) => {
+// Ages new report
+const agesNewListModel = async (date, result) => {
+    await connection.query(`SELECT 
+							c.nit, e.nombre, e.cod_reg, r.nom_reg, 
+							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fec_rad_factura) < 1 THEN c.valor_total_factura END),0) edad0, 
+							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fec_rad_factura) < 31 THEN c.valor_total_factura END),0) edad1,
+							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fec_rad_factura) > 30 AND DATEDIFF('${date}', c.fec_rad_factura) < 61 THEN c.valor_total_factura END),0) edad2, 
+							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fec_rad_factura) > 60 AND DATEDIFF('${date}', c.fec_rad_factura) < 91 THEN c.valor_total_factura END),0) edad3, 
+							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fec_rad_factura) > 90 AND DATEDIFF('${date}', c.fec_rad_factura) < 181 THEN c.valor_total_factura END),0) edad4, 
+							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fec_rad_factura) > 180 AND DATEDIFF('${date}', c.fec_rad_factura) < 361 THEN c.valor_total_factura END),0) edad5, 
+							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fec_rad_factura) > 360 THEN c.valor_total_factura END),0) edad6 
+							FROM cartera AS c 
+							INNER JOIN empresa AS e ON c.nit = e.nit 
+							INNER JOIN regimen AS r ON r.cod_reg = e.cod_reg
+							GROUP BY c.nit 
+							ORDER BY r.nom_reg`, 
+							(error, ages) => {
+        if(error){
+            return result(error)
+        }else{
+            return result(ages)
+        }
+    })
+}
+
+// Ages new report
+const agesListModel = async (date, result) => {
     await connection.query(`SELECT 
 							c.id, c.nit, e.nombre, e.cod_reg, r.nom_reg, 
 							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', DATE(DATE_ADD(NOW(), INTERVAL -1 YEAR)) THEN c.valor_factura END),0) A2022, 
@@ -144,24 +169,26 @@ const validityAgesModel = async (year) => {
 }
 
 const validityAgesNewModel = async (dateInit,dateEnd) => {
-	connection.query(`SELECT 
-					c.nit, 
-					e.nombre, 
-					e.cod_reg, 
-					r.nom_reg, 
-					c.periodo_anio AS vigencia, 
-					SUM(valor_factura) AS valor 
-					FROM consolidadoc AS c 
-					INNER JOIN empresa AS e ON e.nit = c.nit 
-					INNER JOIN regimen AS r ON r.cod_reg = e.cod_reg 
-					GROUP BY c.periodo_anio, c.nit
-					ORDER BY c.periodo_anio
-					WHERE fecha_factura BETWEEN ${dateInit} AND ${dateEnd}`, (e, val) => {
-						if(e){
-							return reject(e)
-						}
-						resolve(val)
-					})
+	return new Promise((resolve, reject) => {
+		connection.query(`SELECT 
+						c.nit, 
+						e.nombre, 
+						e.cod_reg, 
+						r.nom_reg, 
+						c.periodo_anio AS vigencia, 
+						SUM(valor_factura) AS valor 
+						FROM cartera AS c 
+						INNER JOIN empresa AS e ON e.nit = c.nit 
+						INNER JOIN regimen AS r ON r.cod_reg = e.cod_reg 
+						GROUP BY c.periodo_anio, c.nit
+						ORDER BY c.periodo_anio
+						WHERE fecha_factura BETWEEN ${dateInit} AND ${dateEnd}`, (e, val) => {
+							if(e){
+								return reject(e)
+							}
+							resolve(val)
+						})
+	})
 }
 
 module.exports = {
@@ -173,5 +200,6 @@ module.exports = {
     ages12MonthList,
     agesList,
 	validityAgesModel,
-	validityAgesNewModel
+	validityAgesNewModel,
+	agesNewListModel
 };

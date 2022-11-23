@@ -3,6 +3,7 @@ const carbone = require('carbone');
 const paymentsModel = require('../models/payment');
 const agesModel = require('../models/payments_ages');
 const uploadPath = require('../Helpers/uploadFile');
+const exportFileHelper = require('../Helpers/exportFile');
 
 const listPaymentsController = async (req, res, next) => {
     await paymentsModel.listPayments(function(err, data){
@@ -80,6 +81,19 @@ const agesListController = async (req, res, next) => {
     })
 }
 
+const agesNewListController = async (req, res, next) => {
+    var date = req.params.date
+    console.log('Date: ', date);
+    await agesModel.agesNewListModel(date, (data, error) => {
+        if(error){
+            res.status(500).json({message:'Error', error})
+        }else{
+            console.log(data)
+            res.status(200).json(data);
+        }
+    })
+}
+
 
 const validityAgesController = async (req, res, next) => {
     //var currentYear= new Date().getFullYear();
@@ -99,17 +113,23 @@ const validityAgesController = async (req, res, next) => {
     res.status(200).json(cvResult)
 }
 
+const validityNewController = async (req, res, next) => {
+    let dateInit = req.params.dateInit
+    let dateEnd = req.params.dateEnd
+    console.log(dateInit," - ",dateEnd)
+
+    let validityData = await agesModel.validityAgesNewModel(dateInit, dateEnd)
+    res.status(200).json(validityData)
+}
+
 const exportAges = async (req, res) => {
     let dateNow = new Date();
-    let data = req.body.data;
-    console.log(data)
-    let filePathFormat = uploadPath.filePathFormat + 'format_validity.xlsx';
-    
-    carbone.render(filePathFormat, data, function(err, result){
-        if (err) return console.log(err);
-        fs.writeFileSync(`result_format_validity.xlsx`, result);
-        res.send(result)
-    });
+    let data = req.body;
+    //console.log('Data export ages: ',data)
+
+    let file = await exportFileHelper.exportFile(data);
+    console.log('File export: ',file)
+    return res.status(200).send(file);
 }
 
 const uploadPaymentsController = async (res) => {
@@ -131,5 +151,7 @@ module.exports = {
     agesListController,
     validityAgesController,
     uploadPaymentsController,
-    exportAges
+    exportAges,
+    agesNewListController,
+    validityNewController
 }

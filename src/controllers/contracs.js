@@ -15,9 +15,7 @@ const addContracsController = async (req, res) => {
     console.log('Codigo: ', req.body.cod_serv_cto)
 
     let contracSearch = await contracsModel.listContracsByCtoModel(num_cto, nit);
-    console.log('Validate contrac: ',contracSearch)
     let businesSearch = await businessModel.listBusinessByIdModel(nit);
-    console.log('Validate business: ',businesSearch)
     if(contracSearch.length == 0 && businesSearch.length != 0){
         const contracData = {
             num_cto : num_cto,

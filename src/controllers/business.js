@@ -12,34 +12,31 @@ const addBusinessController = async (req, res) => {
     console.log('Ciudad: ', req.body.ciudad)
     console.log('Departamento: ', req.body.departamento)
 
-    businessModel.listBusinessByIdModel(nit)
-    .then((search) => {
-        console.log('Search: ',search)
-        if(search.length == 0){
-            const businessData = {
-                nit : nit,
-                nombre : nombre,
-                cod_reg : regimen,
-                celular : celular,
-                correo : correo,
-                direccion : direccion,
-                ciudad : ciudad,
-                departamento : departamento
-            }
-    
-            console.log(businessData)
-            businessModel.createBusinessModel(businessData, (add, e) => {
-                if(e){console.log('Error: ', e); res.status(500).json({message:'Error: ', e})}
-                res.status(200).json(add);
-            })
-            
-        }else{
-            return json({message: 'Already exits'})            
-        }        
-    })
-    .catch((e) => {
-        console.log(e)
-    })
+    let validateBusiness = await businessModel.listBusinessByIdModel(nit)
+    console.log('Validate business: ',validateBusiness)
+    if(validateBusiness.length == 0){
+        const businessData = {
+            nit : nit,
+            nombre : nombre,
+            cod_reg : regimen,
+            celular : celular,
+            correo : correo,
+            direccion : direccion,
+            ciudad : ciudad,
+            departamento : departamento
+        }
+
+        console.log(businessData)
+        businessModel.createBusinessModel(businessData, (add, e) => {
+            if(e){console.log('Error: ', e); res.status(500).json({message:'Error: ', e})}
+            res.status(200).json(add);
+        })
+        return res.status(200).json(businessData);            
+    }
+
+    if(validateBusiness.length != 0){
+        return res.status(200).json({message: `Business ${nombre} with nit ${nit} Already exits`})  
+    }              
 }
 
 const updateBusinessController = (req, res) => {

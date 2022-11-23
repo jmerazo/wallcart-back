@@ -28,9 +28,11 @@ router.post('/upload-excel', uploadFileHelper.uploadFile.single('upload-excel'),
 
 // Ages report
 router.get('/report/ages/:date', paymentsController.agesListController);
+router.get('/report/ages/new/:date', paymentsController.agesNewListController);
 
 // Validity report
 router.get('/validity/report/:year', paymentsController.validityAgesController);
+router.get('/validity/report/new/:dateInit/:dateEnd', paymentsController.validityNewController);
 
 // User
 router.get('/user/:id', authController.listUserByIdController);
@@ -88,6 +90,6 @@ router.delete('/contracs/delete/:id', contracsController.deleteContracsControlle
 router.get('/utils/regimen', utilsController.listRegimenController);
 router.get('/utils/departments', utilsController.listDepartmentsController);
 router.get('/utils/cities/:code', utilsController.listCitiesController);
-router.get('/utils/export/ages', paymentsController.exportAges);
+router.post('/utils/export/ages', paymentsController.exportAges);
 
 module.exports = router;

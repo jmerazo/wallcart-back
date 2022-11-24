@@ -349,7 +349,9 @@ async function validateUpFile(route){
                     await paymentModel.uploadPaymentModel(dataUploadDB)
                     paymentSuccessfull = paymentSuccessfull.concat(dataUploadDB);                     
                 }
-                paymentNot = paymentNot.concat(dataInfo);                 
+                if(valor_cuenta_s < valor_a_abonar){
+                    paymentNot = paymentNot.concat(dataInfo); 
+                }                                
             }
             
             // Si la validación no retorna información
@@ -384,12 +386,77 @@ async function validateUpFile(route){
                     console.log('Saldo inferior al abonado: ',uploaded);
                     paymentSuccessfull = paymentSuccessfull.concat(dataUploadDB);                     
                 }
-                paymentNot = paymentNot.concat(dataInfo);                   
+                if(saldo_cuenta < valor_a_abonar){
+                    paymentNot = paymentNot.concat(dataInfo);
+                }                           
             }                 
     }       
     deleteFileAfterUpload(route);
     return ({paymentSuccessfull : paymentSuccessfull, paymentNot : paymentNot});
 }
+
+async function commentValidateFileUp(route){
+    var commentSuccessfull = [];
+    var commentNot = [];
+    const workbook = XLSX.readFile(route);
+    const workbookSheets = workbook.SheetNames;
+    const sheet = workbookSheets[0];
+    const beadFile = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
+
+    for await (const itemRow of beadFile) {
+        var nit = itemRow['nit'];
+        var cto = itemRow['contrato'];
+        var cta = itemRow['cuenta'];
+
+        console.log(nit," - ",cto," - ",cta)
+        var fecha_cuenta_ser = itemRow['fecha_cuenta']
+        if(fecha_cuenta_ser == ""){
+            var fecha_cuenta_cv = null;
+        }else{
+            var fecha_cuenta_cv = dateSerielToFormat(fecha_cuenta_ser);
+        }
+        
+        var fecha_rad_cuenta_ser = itemRow['fec_rad_cuenta']
+        if(fecha_rad_cuenta_ser == ""){
+            var fec_rad_cuenta_cv = null;
+        }else{
+            var fec_rad_cuenta_cv = dateSerielToFormat(fecha_rad_cuenta_ser);
+        }           
+        
+        let commentSearch = await paymentModel.validateBeadUpModel(nit, cto, cta)
+        console.log('Data info returned: ', dataInfo)
+        if(commentSearch.length != 0){
+            console.log('Beads not loadedd: ', dataInfo)
+            beadsNot = beadsNot.concat(dataInfo)
+        }
+
+        if(commentSearch.length == 0){
+            const beadsUpload = {
+                nit : itemRow['nit'],
+                contrato : itemRow['contrato'],
+                regimen : itemRow['regimen'],
+                modalidad : itemRow['modalidad'],
+                cuenta : itemRow['cuenta'],
+                fecha_cuenta : fecha_cuenta_cv,
+                fec_rad_cuenta : fec_rad_cuenta_cv,
+                valor_cuenta : itemRow['valor_cuenta']
+            }
+            console.log('Beads json: ', beadsUpload)
+            
+            paymentModel.uploadBeadsModel(beadsUpload)
+            .then((uploaded) => {
+                console.log('Loaded: ',uploaded);
+                beadsSuccessfull = beadsSuccessfull.concat(beadsUpload);                     
+            })
+            .catch((e) => {
+                console.log('Data validate upload DB error ==> ', e)
+                reject(e);
+            })    
+        }                                         
+    }       
+    deleteFileAfterUpload(route);
+    return ({commentSuccessfull : commentSuccessfull, commentNot : commentNot});
+} 
 
 module.exports = {
     uploadFile,
@@ -400,5 +467,6 @@ module.exports = {
     validateFile,
     validateUpFile,
     beadValidateFileUp,
-    filePathFormat
+    filePathFormat,
+    commentValidateFileUp
 }

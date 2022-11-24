@@ -13,7 +13,11 @@ async function exportFile(dataExport){
     //console.log('Data export file: ',data[0].nombre)
     //console.log('Data export file: ',data[0].edad0)
 
-    let data = JSON.stringify(dataExport);
+    let dataJSON = JSON.stringify(dataExport);
+    const data = await dataExport.reduce((acc, item) => {
+        acc[item.nombre] = item
+        return acc
+      }, {})
     console.log('Data JSON: ',data)
     let fileWrite = await carbone.render(filePathFormat, data, function(e, result){
         if (e) {

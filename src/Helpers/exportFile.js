@@ -7,7 +7,7 @@ let filePathFormat = path.join(__dirname + '/resources/format_validity.ods')
 async function exportFile(dataExport){
     const data = await dataExport.reduce((accumulator, element, index) => {
         //acc[element.nombre] = element;
-        accumulator[element.nombre] = element
+        accumulator[element.tipo] = element
         return accumulator
         }, 
     {})

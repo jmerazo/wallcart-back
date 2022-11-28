@@ -4,6 +4,7 @@ const paymentsModel = require('../models/payment');
 const agesModel = require('../models/payments_ages');
 const uploadPath = require('../Helpers/uploadFile');
 const exportFileHelper = require('../Helpers/exportFile');
+const path = require('path');
 
 const listPaymentsController = async (req, res, next) => {
     await paymentsModel.listPayments(function(err, data){
@@ -123,13 +124,31 @@ const validityNewController = async (req, res, next) => {
 }
 
 const exportAges = async (req, res) => {
-    let dateNow = new Date();
     let data = req.body;
-    //console.log('Data export ages: ',data)
+    let nameFileDownload = await exportFileHelper.exportFile(data);
+    console.log('Controller name file: ', nameFileDownload)
+    let fileBase = path.join(__dirname, '..', '..', nameFileDownload);
+    console.log('Controller file base: ', fileBase)
+    return res.status(200).download(fileBase, (e) => {
+        if(e){
+            console.log('Error to download file: ',e)
+        }
+        console.log('Download successfully')
+    });
+}
 
-    let file = await exportFileHelper.exportFile(data);
-    console.log('File export: ',file)
-    return res.status(200).send(file);
+const exportAgesPDF = async (req, res) => {
+    let data = req.body;
+    let nameFileDownload = await exportFileHelper.exportFilePDF(data);
+    console.log('Controller name file: ', nameFileDownload)
+    let fileBase = path.join(__dirname, '..', '..', nameFileDownload);
+    console.log('Controller file base: ', fileBase)
+    return res.status(200).download(fileBase, (e) => {
+        if(e){
+            console.log('Error to download file: ',e)
+        }
+        console.log('Download successfully')
+    });
 }
 
 const uploadPaymentsController = async (res) => {
@@ -153,5 +172,6 @@ module.exports = {
     uploadPaymentsController,
     exportAges,
     agesNewListController,
-    validityNewController
+    validityNewController,
+    exportAgesPDF
 }

@@ -175,14 +175,15 @@ const validityAgesNewModel = async (dateInit,dateEnd) => {
 						e.nombre, 
 						e.cod_reg, 
 						r.nom_reg, 
-						c.periodo_anio AS vigencia, 
-						SUM(valor_factura) AS valor 
-						FROM cartera AS c 
+						c.fecha_factura AS vigencia, 
+						SUM(saldo) AS valor 
+						FROM cartera_copy AS c 
 						INNER JOIN empresa AS e ON e.nit = c.nit 
-						INNER JOIN regimen AS r ON r.cod_reg = e.cod_reg 
-						GROUP BY c.periodo_anio, c.nit
-						ORDER BY c.periodo_anio
-						WHERE fecha_factura BETWEEN ${dateInit} AND ${dateEnd}`, (e, val) => {
+						INNER JOIN regimen AS r ON r.cod_reg = e.cod_reg
+						WHERE fecha_factura BETWEEN ${dateInit} AND ${dateEnd} 
+						GROUP BY c.fecha_factura, c.nit
+						ORDER BY c.fecha_factura
+						`, (e, val) => {
 							if(e){
 								return reject(e)
 							}

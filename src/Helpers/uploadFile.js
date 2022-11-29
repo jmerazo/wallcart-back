@@ -349,9 +349,7 @@ async function validateUpFile(route){
                     await paymentModel.uploadPaymentModel(dataUploadDB)
                     paymentSuccessfull = paymentSuccessfull.concat(dataUploadDB);                     
                 }
-                if(valor_cuenta_s < valor_a_abonar){
-                    paymentNot = paymentNot.concat(dataInfo); 
-                }                                
+                paymentNot = paymentNot.concat(dataInfo);                    
             }
             
             // Si la validación no retorna información
@@ -361,37 +359,37 @@ async function validateUpFile(route){
                 const data = await paymentModel.beadList(itemRow['cuenta'])
                 valor_cuenta_s = data[0].valor_cuenta;
                 saldo_cuenta = data[0].valor_cuenta - valor_a_abonar;
-                //console.log(`Not found: ${saldo_cuenta} > ${valor_a_abonar}`)                       
+                //console.log(`Not found: ${saldo_cuenta} > ${valor_a_abonar}`) 
+                
+                const dataUploadDB = {
+                    nit : itemRow['nit'],
+                    contrato : itemRow['contrato'],
+                    cuenta : itemRow['cuenta'],
+                    fecha_cuenta : fecha_cuenta_cv,
+                    factura : itemRow['factura'],
+                    fecha_factura : fecha_factura_cv,
+                    fec_rad_factura: fec_rad_factura_cv,
+                    valor_abonado : itemRow['valor_abonado'],
+                    fecha_abono : fecha_abono_cv,
+                    glosa_inicial : itemRow['glosa_inicial'],
+                    fgi : fecha_glosa_inicial_cv,
+                    glosa_aceptada : itemRow['glosa_aceptada'],
+                    fga : fecha_glosa_aceptada_cv,
+                    saldo : saldo_cuenta
+                }
 
                 // 700 > 500  ==> Si cumple condición OR 500 > 700 no cumple
                 if(saldo_cuenta > valor_a_abonar){ //INSERT nit, contrato, cuenta, fecha_cuenta, factura, fecha_factura, fec_rad_factura, valor_abonado, fecha_abono
-                    const dataUploadDB = {
-                        nit : itemRow['nit'],
-                        contrato : itemRow['contrato'],
-                        cuenta : itemRow['cuenta'],
-                        fecha_cuenta : fecha_cuenta_cv,
-                        factura : itemRow['factura'],
-                        fecha_factura : fecha_factura_cv,
-                        fec_rad_factura: fec_rad_factura_cv,
-                        valor_abonado : itemRow['valor_abonado'],
-                        fecha_abono : fecha_abono_cv,
-                        glosa_inicial : itemRow['glosa_inicial'],
-                        fgi : fecha_glosa_inicial_cv,
-                        glosa_aceptada : itemRow['glosa_aceptada'],
-                        fga : fecha_glosa_aceptada_cv,
-                        saldo : saldo_cuenta
-                    }
+                    
                     console.log(dataUploadDB);
                     const uploaded = await paymentModel.uploadPaymentModel(dataUploadDB)
                     console.log('Saldo inferior al abonado: ',uploaded);
                     paymentSuccessfull = paymentSuccessfull.concat(dataUploadDB);                     
                 }
-                if(saldo_cuenta < valor_a_abonar){
-                    paymentNot = paymentNot.concat(dataInfo);
-                }                           
+                paymentNot = paymentNot.concat(dataUploadDB);                         
             }                 
     }       
-    deleteFileAfterUpload(route);
+    await deleteFileAfterUpload(route);
     return ({paymentSuccessfull : paymentSuccessfull, paymentNot : paymentNot});
 }
 

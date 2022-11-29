@@ -9,6 +9,7 @@ const corsOptions = require('../Helpers/cors');
 const businessController = require('../controllers/business');
 const utilsController = require('../controllers/utils');
 const contracsController = require('../controllers/contracs');
+const dashController = require('../controllers/dashdata');
 
 // Route information to connect API
 router.get('/', cors(corsOptions), (req, res) => {res.status(200).json({ message: 'Connect to our API'})});
@@ -90,7 +91,10 @@ router.delete('/contracs/delete/:id', contracsController.deleteContracsControlle
 router.get('/utils/regimen', utilsController.listRegimenController);
 router.get('/utils/departments', utilsController.listDepartmentsController);
 router.get('/utils/cities/:code', utilsController.listCitiesController);
-router.post('/utils/export/ages', paymentsController.exportAges);
-router.post('/utils/export/ages/pdf', paymentsController.exportAgesPDF);
+router.get('/utils/export/ages', paymentsController.exportAges);
+router.get('/utils/export/ages/pdf', paymentsController.exportAgesPDF);
+
+// Dashdata
+router.get('/dashdata/all', dashController.listDashDataController);
 
 module.exports = router;

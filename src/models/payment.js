@@ -96,7 +96,7 @@ const uploadPaymentModel = async (dataUpload) => {
 const validatePayUpModel = async (nit, cto, cta, fra) => {
 	return new Promise((resolve, reject) => { 
 		connection.query(`SELECT 
-							ca.nit, ca.contrato, ca.cuenta, cs.valor_cuenta, ca.fecha_cuenta, ca.factura, ca.valor_abonado, ca.fecha_abono, ca.glosa_aceptada, ca.fga, ca.saldo 
+							ca.nit, ca.contrato, ca.cuenta, cs.valor_cuenta, ca.factura, ca.valor_abonado, ca.fecha_abono, ca.glosa_aceptada, ca.fga, ca.saldo 
 							FROM cartera AS ca
 							INNER JOIN cuentas AS cs
 							ON ca.nit = cs.nit

@@ -126,7 +126,6 @@ const validityNewController = async (req, res, next) => {
 const exportAges = async (req, res) => {
     let data = req.body;
     //console.log(data)
-    console.log('data: ',data)
     let nameFileDownload = await exportFileHelper.exportFile(data);
     //console.log('Controller name file: ', nameFileDownload)
     let fileBase = path.join(__dirname, '..', '..', nameFileDownload);

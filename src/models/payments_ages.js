@@ -72,7 +72,7 @@ const ages12MonthList = async function(result) {
 // Age report
 const agesList = async (date, result) => {
     await connection.query(`SELECT 
-							c.id, c.nit, e.nombre, e.cod_reg, r.nom_reg, c.tipo,
+							c.id, c.nit, e.nombre, e.cod_reg, r.nom_reg,
 							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fecha_envio) = 0 THEN c.valor_factura END),0) edad0, 
 							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fecha_envio) < 31 THEN c.valor_factura END),0) edad1,
 							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fecha_envio) > 30 AND DATEDIFF('${date}', c.fecha_envio) < 61 THEN c.valor_factura END),0) edad2, 

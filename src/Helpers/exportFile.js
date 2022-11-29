@@ -1,7 +1,6 @@
 const fs = require('fs');
 const carbone = require('carbone');
 const path = require('path');
-const download = require('download');
 
 let filePathFormat = path.join(__dirname + '/resources/format_validity.xlsx')
 

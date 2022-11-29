@@ -125,10 +125,11 @@ const validityNewController = async (req, res, next) => {
 
 const exportAges = async (req, res) => {
     let data = req.body;
+    //console.log(data)
     let nameFileDownload = await exportFileHelper.exportFile(data);
-    console.log('Controller name file: ', nameFileDownload)
+    //console.log('Controller name file: ', nameFileDownload)
     let fileBase = path.join(__dirname, '..', '..', nameFileDownload);
-    console.log('Controller file base: ', fileBase)
+    //console.log('Controller file base: ', fileBase)
     return res.status(200).download(fileBase, (e) => {
         if(e){
             console.log('Error to download file: ',e)

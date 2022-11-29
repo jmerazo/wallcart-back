@@ -33,3 +33,5 @@ Implementar con typescript
 Consultar MySQL2
 CarbonJS para diseño excel
 Usar passport para login
+
+Para desplegar app: https://pm2.keymetrics.io/docs/usage/quick-start/

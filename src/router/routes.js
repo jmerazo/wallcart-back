@@ -90,7 +90,7 @@ router.delete('/contracs/delete/:id', contracsController.deleteContracsControlle
 router.get('/utils/regimen', utilsController.listRegimenController);
 router.get('/utils/departments', utilsController.listDepartmentsController);
 router.get('/utils/cities/:code', utilsController.listCitiesController);
-router.get('/utils/export/ages', paymentsController.exportAges);
-router.get('/utils/export/ages/pdf', paymentsController.exportAgesPDF);
+router.post('/utils/export/ages', paymentsController.exportAges);
+router.post('/utils/export/ages/pdf', paymentsController.exportAgesPDF);
 
 module.exports = router;

@@ -48,13 +48,18 @@ async function exportFilePDF(dataExport){
     });
 
     let fileBase = path.join(__dirname, '..', '..', fileName);
-    var fileBuffer = fs.readFileSync(fileBase);
+    console.log('File base: ',fileBase)
+    let fileBuffer = fs.readFileSync(fileBase);
+    console.log('File read: ',fileBuffer)
 
     let options = {
         convertTo: 'pdf'
     };
 
-    await carbone.convert(fileBuffer, options, function (err, result) {
+    carbone.convert(fileBuffer, options, function (err, result) {
+        if(err){
+            console.log('Error convert: ', err)
+        }
         fs.writeFileSync('report_ages_hjmh.pdf', result);
     });
     return fileName;

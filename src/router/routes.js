@@ -59,12 +59,17 @@ router.post('/portfolio/upload-excel/beads', uploadFileHelper.uploadFile.single(
 router.post('/portfolio/upload-excel/payments', uploadFileHelper.uploadFile.single('p-upload-excel'), (req, res) => {
     uploadFileHelper.validateUpFile(uploadFileHelper.filePathExFile + req.file.filename)
     .then((result) => {
-        //console.log('Result: ', result)
-        res.status(200).json(result)
-        //setTimeout(()=>{
-        //    console.log('Result: ', result)
-        //    res.status(200).json(result)
-        //;} , 2500);        
+        res.status(200).json(result)     
+    })
+    .catch((e) => {
+        console.log('Error: ',e)
+    });
+})
+
+router.post('/portfolio/upload-excel/payments/all', uploadFileHelper.uploadFile.single('p-upload-excel'), (req, res) => {
+    uploadFileHelper.validateUpFileAll(uploadFileHelper.filePathExFile + req.file.filename)
+    .then((result) => {
+        res.status(200).json(result)     
     })
     .catch((e) => {
         console.log('Error: ',e)

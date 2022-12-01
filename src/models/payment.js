@@ -99,7 +99,8 @@ const validatePayUpModel = async (nit, cto, cta, fra) => {
 							ca.nit, ca.contrato, ca.cuenta, cs.valor_cuenta, ca.factura, ca.valor_abonado, ca.fecha_abono, ca.glosa_aceptada, ca.fga, ca.saldo 
 							FROM cartera AS ca
 							INNER JOIN cuentas AS cs
-							ON ca.nit = cs.nit
+							ON ca.nit = cs.nit 
+							AND ca.contrato = cs.contrato
 							AND ca.cuenta = cs.cuenta 
 							WHERE ca.nit = '${nit}' 
 							AND ca.contrato = '${cto}' 
@@ -148,10 +149,10 @@ const validateBeadUpModel = async (nit, cto, cta) => {
 	})
 }
 
-const beadList = async (cta) => {
+const beadList = async (nit, cto, cta) => {
 	//console.log('Bead search: ', cta)
 	return new Promise((resolve, reject) => { 
-		connection.query(`SELECT * FROM cuentas WHERE cuenta = '${cta}'
+		connection.query(`SELECT * FROM cuentas WHERE nit = '${nit}' AND contrato = '${cto}' AND cuenta = '${cta}'
 							`, (e, val) => {
 								if(e){
 									return reject(e)

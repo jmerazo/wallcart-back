@@ -408,6 +408,7 @@ async function validateUpFileAll(route){
         var cto = itemRow['contrato'];
         var cta = itemRow['cuenta'];
         var fra = itemRow['factura'];
+        console.log('Nit: ',itemRow['nit'],' - Contrato: ',itemRow['contrato'],' - Cuenta: ', itemRow['cuenta'],' - Factura: ',itemRow['factura'])
 
         let fecha_cuenta_cv = null;
         var fecha_cuenta_ser = itemRow['fecha_cuenta'];
@@ -445,17 +446,16 @@ async function validateUpFileAll(route){
             var fecha_glosa_aceptada_cv = dateSerielToFormat(fecha_glosa_aceptada_ser);
         }
 
-        const dataInfo = await paymentModel.validatePayUpModel(nit, cto, cta, fra)
+        let dataInfo = await paymentModel.validatePayUpModel(nit, cto, cta, fra)
 
         var valor_a_abonar = itemRow['valor_abonado'] + itemRow['glosa_aceptada'];
 
         if(dataInfo.length != 0){
             if(dataInfo[0].saldo == ""){
                 console.log(dataInfo[0].valor_cuenta," - ",dataInfo[0].contrato," - ",dataInfo[0].nit)
-                valor_cuenta_s = dataInfo[0].valor_cuenta; 
-                
+                valor_cuenta_s = dataInfo[0].valor_cuenta;             
             }else{
-                var valor_cuenta_s = dataInfo[0].saldo; 
+                valor_cuenta_s = dataInfo[0].saldo; 
             }
 
             var saldo_cuenta = valor_cuenta_s - valor_a_abonar;
@@ -485,34 +485,51 @@ async function validateUpFileAll(route){
         }
         
         if(dataInfo.length === 0){
-            const data = await paymentModel.beadList(itemRow['cuenta'])
-
-            console.log(data[0].valor_cuenta," - ",data[0].contrato," - ",data[0].nit)
-            valor_cuenta_s = data[0].valor_cuenta;                    
-            saldo_cuenta = data[0].valor_cuenta - valor_a_abonar;
+            const data = await paymentModel.beadList(itemRow['nit'], itemRow['contrato'], itemRow['cuenta'])
             
-            const dataUploadDB = {
-                nit : itemRow['nit'],
-                contrato : itemRow['contrato'],
-                cuenta : itemRow['cuenta'],
-                fecha_cuenta : fecha_cuenta_cv,
-                factura : itemRow['factura'],
-                fecha_factura : fecha_factura_cv,
-                fec_rad_factura: fec_rad_factura_cv,
-                valor_abonado : itemRow['valor_abonado'],
-                fecha_abono : fecha_abono_cv,
-                glosa_inicial : itemRow['glosa_inicial'],
-                fgi : fecha_glosa_inicial_cv,
-                glosa_aceptada : itemRow['glosa_aceptada'],
-                fga : fecha_glosa_aceptada_cv,
-                saldo : saldo_cuenta
-            }
-            try {
+            if(data.length != 0){
+                console.log(data[0].valor_cuenta," - ",data[0].contrato," - ",data[0].nit)
+                valor_cuenta_s = data[0].valor_cuenta;                    
+                saldo_cuenta = data[0].valor_cuenta - valor_a_abonar;
+                const dataUploadDB = {
+                    nit : itemRow['nit'],
+                    contrato : itemRow['contrato'],
+                    cuenta : itemRow['cuenta'],
+                    fecha_cuenta : fecha_cuenta_cv,
+                    factura : itemRow['factura'],
+                    fecha_factura : fecha_factura_cv,
+                    fec_rad_factura: fec_rad_factura_cv,
+                    valor_abonado : itemRow['valor_abonado'],
+                    fecha_abono : fecha_abono_cv,
+                    glosa_inicial : itemRow['glosa_inicial'],
+                    fgi : fecha_glosa_inicial_cv,
+                    glosa_aceptada : itemRow['glosa_aceptada'],
+                    fga : fecha_glosa_aceptada_cv,
+                    saldo : saldo_cuenta
+                }                
                 await paymentModel.uploadPaymentModel(dataUploadDB)
                 paymentSuccessfull = paymentSuccessfull.concat(dataUploadDB);   
-            } catch (error) {
-                paymentNot = paymentNot.concat(dataUploadDB)
             }
+            if(data.length === 0){
+                saldo_cuenta = 0;
+                const dataUploadDB = {
+                    nit : itemRow['nit'],
+                    contrato : itemRow['contrato'],
+                    cuenta : itemRow['cuenta'],
+                    fecha_cuenta : fecha_cuenta_cv,
+                    factura : itemRow['factura'],
+                    fecha_factura : fecha_factura_cv,
+                    fec_rad_factura: fec_rad_factura_cv,
+                    valor_abonado : itemRow['valor_abonado'],
+                    fecha_abono : fecha_abono_cv,
+                    glosa_inicial : itemRow['glosa_inicial'],
+                    fgi : fecha_glosa_inicial_cv,
+                    glosa_aceptada : itemRow['glosa_aceptada'],
+                    fga : fecha_glosa_aceptada_cv,
+                    saldo : saldo_cuenta
+                }
+                paymentNot = paymentNot.concat(dataUploadDB)
+            }            
         }                 
     }       
     await deleteFileAfterUpload(route);

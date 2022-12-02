@@ -98,13 +98,13 @@ const agesList = async (date, result) => {
 const agesNewListModel = async (date, result) => {
     await connection.query(`SELECT 
 							c.nit, e.nombre, e.cod_reg, r.nom_reg, 
-							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fec_rad_factura) < 1 THEN c.valor_total_factura END),0) edad0, 
-							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fec_rad_factura) < 31 THEN c.valor_total_factura END),0) edad1,
-							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fec_rad_factura) > 30 AND DATEDIFF('${date}', c.fec_rad_factura) < 61 THEN c.valor_total_factura END),0) edad2, 
-							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fec_rad_factura) > 60 AND DATEDIFF('${date}', c.fec_rad_factura) < 91 THEN c.valor_total_factura END),0) edad3, 
-							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fec_rad_factura) > 90 AND DATEDIFF('${date}', c.fec_rad_factura) < 181 THEN c.valor_total_factura END),0) edad4, 
-							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fec_rad_factura) > 180 AND DATEDIFF('${date}', c.fec_rad_factura) < 361 THEN c.valor_total_factura END),0) edad5, 
-							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fec_rad_factura) > 360 THEN c.valor_total_factura END),0) edad6 
+							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fec_rad_factura) < 1 THEN c.saldo END),0) edad0, 
+							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fec_rad_factura) < 31 THEN c.saldo END),0) edad1,
+							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fec_rad_factura) > 30 AND DATEDIFF('${date}', c.fec_rad_factura) < 61 THEN c.saldo END),0) edad2, 
+							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fec_rad_factura) > 60 AND DATEDIFF('${date}', c.fec_rad_factura) < 91 THEN c.saldo END),0) edad3, 
+							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fec_rad_factura) > 90 AND DATEDIFF('${date}', c.fec_rad_factura) < 181 THEN c.saldo END),0) edad4, 
+							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fec_rad_factura) > 180 AND DATEDIFF('${date}', c.fec_rad_factura) < 361 THEN c.saldo END),0) edad5, 
+							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fec_rad_factura) > 360 THEN c.saldo END),0) edad6 
 							FROM cartera AS c 
 							INNER JOIN empresa AS e ON c.nit = e.nit 
 							INNER JOIN regimen AS r ON r.cod_reg = e.cod_reg

@@ -106,8 +106,8 @@ const validatePayUpModel = async (nit, cto, cta, fra) => {
 							AND ca.contrato = '${cto}' 
 							AND ca.cuenta = '${cta}' 
 							AND ca.factura = "${fra}"
-							ORDER BY ca.fecha_abono 
-							ASC LIMIT 1 
+							ORDER BY ca.id 
+							DESC LIMIT 1 
 							`, (e, val) => {
 								if(e){
 									return reject(e)

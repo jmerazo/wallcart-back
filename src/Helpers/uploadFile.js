@@ -630,6 +630,8 @@ async function validationToUpload(route){
                 saldo : saldo_actualizado
             }
 
+            console.log('Pay to upload: ', payUpload)
+
             try {
                 // Cargar pagos validados
                 await paymentModel.uploadPaymentModel(payUpload)
@@ -640,23 +642,25 @@ async function validationToUpload(route){
             }  
         }
 
-        const payNotUpload = {
-            nit : itemRow['nit'],
-            contrato : itemRow['contrato'],
-            cuenta : itemRow['cuenta'],
-            fecha_cuenta : fecha_cuenta_cv,
-            factura : itemRow['factura'],
-            fecha_factura : fecha_factura_cv,
-            fec_rad_factura: fec_rad_factura_cv,
-            valor_abonado : itemRow['valor_abonado'],
-            fecha_abono : fecha_abono_cv,
-            glosa_inicial : itemRow['glosa_inicial'],
-            fgi : fecha_glosa_inicial_cv,
-            glosa_aceptada : itemRow['glosa_aceptada'],
-            fga : fecha_glosa_aceptada_cv,
-            saldo : 0
-        }
-        paymentNot = paymentNot.concat(payNotUpload);            
+        if(validateBeads.length == 0){
+            const payNotUpload = {
+                nit : itemRow['nit'],
+                contrato : itemRow['contrato'],
+                cuenta : itemRow['cuenta'],
+                fecha_cuenta : fecha_cuenta_cv,
+                factura : itemRow['factura'],
+                fecha_factura : fecha_factura_cv,
+                fec_rad_factura: fec_rad_factura_cv,
+                valor_abonado : itemRow['valor_abonado'],
+                fecha_abono : fecha_abono_cv,
+                glosa_inicial : itemRow['glosa_inicial'],
+                fgi : fecha_glosa_inicial_cv,
+                glosa_aceptada : itemRow['glosa_aceptada'],
+                fga : fecha_glosa_aceptada_cv,
+                saldo : 0
+            }
+            paymentNot = paymentNot.concat(payNotUpload); 
+        }           
     }       
     await deleteFileAfterUpload(route);
     return ({paymentSuccessfull : paymentSuccessfull, paymentNot : paymentNot});

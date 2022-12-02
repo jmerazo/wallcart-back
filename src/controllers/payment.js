@@ -89,7 +89,7 @@ const agesNewListController = async (req, res, next) => {
         if(error){
             res.status(500).json({message:'Error', error})
         }else{
-            console.log(data)
+            //console.log(data)
             res.status(200).json(data);
         }
     })

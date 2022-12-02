@@ -23,6 +23,7 @@ async function downloadFileFormat(fileName){
 
 async function exportFile(dataExport){
 
+    console.log(dataExport)
     let fileName = 'report_ages_hjmh.xlsx'
 
     await carbone.render(filePathFormat, dataExport, function(e, result){

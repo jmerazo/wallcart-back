@@ -536,6 +536,132 @@ async function validateUpFileAll(route){
     return ({paymentSuccessfull : paymentSuccessfull, paymentNot : paymentNot});
 }
 
+async function validationToUpload(route){
+    var paymentSuccessfull = [];
+    var paymentNot = [];
+
+    const workbook = XLSX.readFile(route);
+    const workbookSheets = workbook.SheetNames;
+    const sheet = workbookSheets[0];
+    const dataFile = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
+
+    for await (const itemRow of dataFile) {
+        var nit = itemRow['nit'];
+        var cto = itemRow['contrato'];
+        var cta = itemRow['cuenta'];
+        var fra = itemRow['factura'];
+        var valor_a_abonar = itemRow['valor_abonado'] + itemRow['glosa_aceptada'];
+
+        var fecha_cuenta_cv = null;
+        var fecha_cuenta_ser = itemRow['fecha_cuenta'];
+        if(fecha_cuenta_ser){
+            fecha_cuenta_cv = dateSerielToFormat(fecha_cuenta_ser);
+        }
+        
+        var fecha_factura_cv = null;
+        var fecha_factura_ser = itemRow['fecha_factura']
+        if(fecha_factura_ser){
+            var fecha_factura_cv = dateSerielToFormat(fecha_factura_ser);
+        }
+        
+        var fec_rad_factura_cv = null;
+        var fec_rad_factura_ser = itemRow['fec_rad_factura'];
+        if(fec_rad_factura_ser){
+            var fec_rad_factura_cv = dateSerielToFormat(fec_rad_factura_ser);
+        }
+        
+        var fecha_abono_cv = null;
+        var fecha_abono_ser = itemRow['fecha_abono'];
+        if(fecha_abono_ser){
+            var fecha_abono_cv = dateSerielToFormat(fecha_abono_ser);
+        }
+        
+        var fecha_glosa_inicial_cv = null;
+        var fecha_glosa_inicial_ser = itemRow['fgi'];
+        if(fecha_glosa_inicial_ser){
+            var fecha_glosa_inicial_cv = dateSerielToFormat(fecha_glosa_inicial_ser);
+        }
+        
+        var fecha_glosa_aceptada_cv = null; 
+        var fecha_glosa_aceptada_ser = itemRow['fga'];
+        if(fecha_glosa_aceptada_ser){
+            var fecha_glosa_aceptada_cv = dateSerielToFormat(fecha_glosa_aceptada_ser);
+        }
+
+        let saldo_cuenta = itemRow['saldo'];
+        // Validar si la cuenta existe
+        let validateBeads = await paymentModel.beadList(nit, cto, cta);
+
+        // Si la consulta retorna un array, entonces continuo
+        if(validateBeads.length != 0){
+            // Consultar si el pago de la factura existe
+            let validateInvoice = await paymentModel.validatePayUpModel(nit, cto, cta, fra)
+
+            // Si retorna un array vacio es porque es el primer pago que se realiza a esa cuenta y de esa factura, entonces:
+            if(validateInvoice.length == 0 || saldo_cuenta == ""){
+                // El valor del saldo equivale a el valor de la cuenta total
+                saldo_cuenta = validateBeads[0].valor_cuenta;                                        
+            }
+
+            if(validateInvoice.length != 0){
+                saldo_cuenta = validateInvoice[0].saldo;
+            }
+
+            console.log('Saldo: ', saldo_cuenta);
+            // Restar el valor de la cuenta o el saldo menos el valor abonado
+            let saldo_actualizado = saldo_cuenta - valor_a_abonar;
+            console.log('Saldo actualizado: ', saldo_actualizado);
+
+            // Organizar la data para cargar a base de datos
+            const payUpload = {
+                nit : itemRow['nit'],
+                contrato : itemRow['contrato'],
+                cuenta : itemRow['cuenta'],
+                fecha_cuenta : fecha_cuenta_cv,
+                factura : itemRow['factura'],
+                fecha_factura : fecha_factura_cv,
+                fec_rad_factura: fec_rad_factura_cv,
+                valor_abonado : itemRow['valor_abonado'],
+                fecha_abono : fecha_abono_cv,
+                glosa_inicial : itemRow['glosa_inicial'],
+                fgi : fecha_glosa_inicial_cv,
+                glosa_aceptada : itemRow['glosa_aceptada'],
+                fga : fecha_glosa_aceptada_cv,
+                saldo : saldo_actualizado
+            }
+
+            try {
+                // Cargar pagos validados
+                await paymentModel.uploadPaymentModel(payUpload)
+                paymentSuccessfull = paymentSuccessfull.concat(payUpload);                 
+            } catch (e) {
+                console.log('Error to upload pay: ',e);
+                return e;                
+            }  
+        }
+
+        const payNotUpload = {
+            nit : itemRow['nit'],
+            contrato : itemRow['contrato'],
+            cuenta : itemRow['cuenta'],
+            fecha_cuenta : fecha_cuenta_cv,
+            factura : itemRow['factura'],
+            fecha_factura : fecha_factura_cv,
+            fec_rad_factura: fec_rad_factura_cv,
+            valor_abonado : itemRow['valor_abonado'],
+            fecha_abono : fecha_abono_cv,
+            glosa_inicial : itemRow['glosa_inicial'],
+            fgi : fecha_glosa_inicial_cv,
+            glosa_aceptada : itemRow['glosa_aceptada'],
+            fga : fecha_glosa_aceptada_cv,
+            saldo : 0
+        }
+        paymentNot = paymentNot.concat(payNotUpload);            
+    }       
+    await deleteFileAfterUpload(route);
+    return ({paymentSuccessfull : paymentSuccessfull, paymentNot : paymentNot});
+}
+
 async function commentValidateFileUp(route){
     var commentSuccessfull = [];
     var commentNot = [];
@@ -610,5 +736,6 @@ module.exports = {
     beadValidateFileUp,
     filePathFormat,
     commentValidateFileUp,
-    validateUpFileAll
+    validateUpFileAll,
+    validationToUpload
 }

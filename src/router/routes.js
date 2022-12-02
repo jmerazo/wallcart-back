@@ -67,7 +67,7 @@ router.post('/portfolio/upload-excel/payments', uploadFileHelper.uploadFile.sing
 })
 
 router.post('/portfolio/upload-excel/payments/all', uploadFileHelper.uploadFile.single('p-upload-excel'), (req, res) => {
-    uploadFileHelper.validateUpFileAll(uploadFileHelper.filePathExFile + req.file.filename)
+    uploadFileHelper.validationToUpload(uploadFileHelper.filePathExFile + req.file.filename)
     .then((result) => {
         res.status(200).json(result)     
     })

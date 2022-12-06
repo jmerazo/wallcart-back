@@ -169,6 +169,7 @@ const validityAgesModel = async (year) => {
 }
 
 const validityAgesNewModel = async (dateInit,dateEnd) => {
+	console.log(dateInit," - ",dateEnd)
 	return new Promise((resolve, reject) => {
 		connection.query(`SELECT 
 						c.nit, 
@@ -176,17 +177,18 @@ const validityAgesNewModel = async (dateInit,dateEnd) => {
 						e.cod_reg, 
 						r.nom_reg, 
 						c.fecha_factura AS vigencia, 
-						SUM(saldo) AS valor 
-						FROM cartera_copy AS c 
+						SUM(c.saldo) AS valor 
+						FROM cartera AS c 
 						INNER JOIN empresa AS e ON e.nit = c.nit 
 						INNER JOIN regimen AS r ON r.cod_reg = e.cod_reg
-						WHERE fecha_factura BETWEEN ${dateInit} AND ${dateEnd} 
-						GROUP BY c.fecha_factura, c.nit
+						WHERE fecha_factura BETWEEN '${dateInit}' AND '${dateEnd}' 
+						GROUP BY YEAR(c.fecha_factura), c.nit
 						ORDER BY c.fecha_factura
 						`, (e, val) => {
 							if(e){
 								return reject(e)
 							}
+							console.log('Validity new:', val)
 							resolve(val)
 						})
 	})

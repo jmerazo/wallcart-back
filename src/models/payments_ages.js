@@ -194,6 +194,20 @@ const validityAgesNewModel = async (dateInit,dateEnd) => {
 	})
 }
 
+/* SELECT 
+						c.nit, 
+						e.nombre, 
+						e.cod_reg, 
+						r.nom_reg, 
+						c.fecha_factura AS vigencia, 
+						SUM(c.saldo) AS valor 
+						FROM cartera AS c 
+						INNER JOIN empresa AS e ON e.nit = c.nit 
+						INNER JOIN regimen AS r ON r.cod_reg = e.cod_reg
+						WHERE YEAR(c.fecha_factura) BETWEEN '2022' AND '2022' 
+						GROUP BY YEAR(c.fecha_factura), c.nit
+						ORDER BY r.nom_reg,c.nit;*/
+
 module.exports = {
     agesMonthList,
     ages2MonthList,

@@ -33,9 +33,30 @@ const listCities = async(code, result) => {
     })
 }
 
+const statePortfolio = async(df, di, rta) => {
+    await connection.query(`SELECT 
+                            id, nit, cuenta, fecha_factura, fec_rad_factura, factura, valor_abonado, glosa_inicial, glosa_aceptada, saldo 
+                            FROM cartera 
+                            WHERE nit = '800130907-4' 
+                            AND fec_rad_factura <= '2022-11-30' 
+                            AND fec_rad_factura >= DATE_ADD('2022-11-30', INTERVAL -1 YEAR) 
+                            AND saldo > 0 
+                            GROUP BY cuenta,contrato 
+                            ORDER BY id ASC`, (data, e) => {
+                                if(e){
+                                    return rta(e)
+                                }else{
+                                    return rta(data)
+                                }
+                            })
+}
+
+/* SELECT id, nit, cuenta, fecha_factura, fec_rad_factura, factura, valor_abonado, glosa_inicial, glosa_aceptada, saldo FROM cartera WHERE nit = '800130907-4' AND saldo > 0 AND MAX(updated) GROUP BY cuenta,contrato ORDER BY id DESC;
+*/
 
 module.exports = {
     listRegimen,
     listDepartaments,
-    listCities
+    listCities,
+    statePortfolio
 }

@@ -1,4 +1,6 @@
 const utilsModels = require('../models/utils')
+const exportFileHelper = require('../Helpers/exportFile');
+const path = require('path');
 
 const listRegimenController = (req, res) => {
     utilsModels.listRegimen((regimen, e) => {
@@ -31,8 +33,34 @@ const listCitiesController = (req, res) => {
     })
 }
 
+const statePortfolioController = async (req, res) => {
+    const nit = req.params.nit;
+    utilsModels.statePortfolio(nit, (state, e) => {
+        if(e){
+            res.status(500).json({ message: 'Error list state: ',e})
+        }else{
+            res.status(200).json(state)
+        }
+    })
+}
+
+const exportState = async (req, res) => {
+    let data = req.body;
+    let nameFileDownload = await exportFileHelper.exportFileState(data);
+    let fileBase = path.join(__dirname, '..', '..', nameFileDownload);
+    return res.status(200).download(fileBase, (e) => {
+        if(e){
+            console.log('Error to download file: ',e)
+        }else{
+            console.log('Download successfully')
+        }
+    });
+}
+
 module.exports = {
     listRegimenController,
     listDepartmentsController,
-    listCitiesController
+    listCitiesController,
+    statePortfolioController,
+    exportState
 }

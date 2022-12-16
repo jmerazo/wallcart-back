@@ -1,6 +1,7 @@
 Edades: https://hdeleon.net/como-sumar-1-dia-1-mes-o-1-ano-a-una-fecha-en-mysql/
 Sumas: https://www.mysqltutorial.org/mysql-sum/
 Restar fechas: https://www.techonthenet.com/mysql/functions/datediff.php
+https://es.stackoverflow.com/questions/264503/problema-con-select-max-mysql
 Reporte:
     -Edades: ok
     -Vigencias: por hacer, años

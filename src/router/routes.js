@@ -98,6 +98,8 @@ router.get('/utils/departments', utilsController.listDepartmentsController);
 router.get('/utils/cities/:code', utilsController.listCitiesController);
 router.post('/utils/export/ages', paymentsController.exportAges);
 router.post('/utils/export/ages/pdf', paymentsController.exportAgesPDF);
+router.get('/utils/state/portfolio/:nit', utilsController.statePortfolioController);
+router.post('/utils/export/state', utilsController.exportState);
 
 // Dashdata
 router.get('/dashdata/all', dashController.listDashDataController);

@@ -3,6 +3,7 @@ const carbone = require('carbone');
 const path = require('path');
 
 let filePathFormat = path.join(__dirname + '/resources/format_ages.xlsx')
+let filePathFormatState = path.join(__dirname + '/resources/format_collection_office.xlsx')
 
 async function downloadFileFormat(fileName){    
 
@@ -37,6 +38,19 @@ async function exportFile(dataExport){
     return fileName;
 }
 
+async function exportFileState(dataExport){
+    let fileName = 'collection_office.xlsx'
+
+    await carbone.render(filePathFormatState, dataExport, function(e, result){
+        if (e) {
+          return console.log(e);
+        }
+        fs.writeFileSync(fileName, result);
+    });
+
+    return fileName;
+}
+
 async function exportFilePDF(dataExport){
 
     let fileName = 'report_ages_hjmh.xlsx'
@@ -68,5 +82,6 @@ async function exportFilePDF(dataExport){
 
 module.exports = {
     exportFile,
-    exportFilePDF
+    exportFilePDF,
+    exportFileState
 }

@@ -33,16 +33,13 @@ const listCities = async(code, result) => {
     })
 }
 
-const statePortfolio = async(df, di, rta) => {
-    await connection.query(`SELECT 
-                            id, nit, cuenta, fecha_factura, fec_rad_factura, factura, valor_abonado, glosa_inicial, glosa_aceptada, saldo 
-                            FROM cartera 
-                            WHERE nit = '800130907-4' 
-                            AND fec_rad_factura <= '2022-11-30' 
-                            AND fec_rad_factura >= DATE_ADD('2022-11-30', INTERVAL -1 YEAR) 
-                            AND saldo > 0 
-                            GROUP BY cuenta,contrato 
-                            ORDER BY id ASC`, (data, e) => {
+const statePortfolio = async(nit, rta) => {
+    await connection.query(`SELECT c.id, c.nit, bs.nombre, c.cuenta, c.fecha_factura, c.fec_rad_factura, c.factura, c.valor_abonado, c.glosa_inicial, c.glosa_aceptada, ca.saldo_s 
+                            FROM cartera c
+                            INNER JOIN ( SELECT s.cuenta cuenta_s, s.saldo saldo_s, s.contrato contrato_s, s.nit nit_s FROM cartera s ORDER BY s.id DESC) ca ON ca.nit_s = c.nit AND ca.cuenta_s = c.cuenta and ca.contrato_s = c.contrato
+                            INNER JOIN business bs ON ca.nit_s = bs.nit 
+                            WHERE c.nit = '${nit}' AND ca.saldo_s <> 0
+                            GROUP BY ca.cuenta_s, ca.nit_s`, (data, e) => {
                                 if(e){
                                     return rta(e)
                                 }else{

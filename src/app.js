@@ -4,11 +4,12 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const exphbs = require('express-handlebars');
-const session = require('express-session');
+const expressSession = require('express-session');
 const validator = require('express-validator');
 const passport = require('passport');
 const flash = require('connect-flash');
 const paginate = require('express-paginate');
+const cookieParser = require('cookie-parser')
 
 const app = express();
 
@@ -29,6 +30,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'views')));
 app.use(paginate.middleware(10, 50));
+app.use(expressSession({
+    secret: 'mySecretKey',
+    resave: true,
+    saveUninitialized: true
+}));
+app.use(passport.initialize())
+app.use(passport.session());
+app.use(cookieParser('nothing else matters'))
 
 //Router
 const services = require('./router/routes');

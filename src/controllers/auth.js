@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const userAuthModel = require('../models/auth');
+const passport = require('passport');
+const passportLocal = require('passport-local').Strategy;
 
 const userAuthCreate = async (req, res) => {
     try {        
@@ -165,6 +167,55 @@ const userAuthLogin = async (req, res) => {
     } catch (error) {
         console.log(error);        
     }
+}
+
+passport.serializeUser(function(user, done) {
+    done(null, user._id);
+});
+  
+passport.deserializeUser(function(id, done) {
+    User.findById(id, function(err, user) {
+        done(err, user);
+    });
+});  
+
+const authPassportLogin = async (req, res, next) => {
+    const {email, password} = req.body;
+    if(!email && !password){
+        res.status(400).send('All input is required');
+    }
+
+    // passport/login.js
+    passport.use('login', new LocalStrategy({
+        passReqToCallback : true
+    },
+    function(email, password, done) {
+        userAuthModel.userAuthByEmail(email, async (user, err) => {
+            if(user == ""){
+                console.log(`User ${email} not found`, err);
+                res.sendStatus(403);
+            }else{
+                const userData = {
+                    id : user[0,0].id,
+                    email : user[0,0].email,
+                    password : user[0,0].password,
+                    rol_id : user[0,0].rol_id,
+                    status : user[0,0].status
+                }
+                if(userData &&(await bcrypt.compare(password, userData.password))){
+                    const token = jwt.sign(
+                        {user_id: userData.id, email},
+                        process.env.TOKEN_KEY,
+                        {expiresIn: "2h"}
+                    );    
+                    userData.token = token;        
+                    res.json(userData);
+                }else{
+                    res.status(400).send('Invalid credentials'); 
+                }          
+            }
+        });
+    }));
 }
 
 const listUserByIdController = async (req, res, next) => {

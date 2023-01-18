@@ -208,11 +208,12 @@ const authPassportLogin = async (req, res, next) => {
                         process.env.TOKEN_KEY,
                         {expiresIn: "2h"}
                     );    
-                    userData.token = token;        
-                    res.json(userData);
+                    userData.token = token;
+                    return done(json(userData));        
+                    //res.json(userData);
                 }else{
                     res.status(400).send('Invalid credentials'); 
-                }          
+                }
             }
         });
     }));

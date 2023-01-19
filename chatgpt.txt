@@ -1,0 +1,129 @@
+// Importar las dependencias necesarias
+const express = require("express");
+const session = require("express-session");
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+const MySQLStore = require("express-mysql-session")(session);
+
+// Configurar la estrategia de autenticación local
+passport.use(new LocalStrategy(
+  function(username, password, done) {
+    // Comprobar las credenciales del usuario en la base de datos
+    if (username === "admin" && password === "password") {
+      return done(null, {username: "admin"});
+    } else {
+      return done(null, false);
+    }
+  }
+));
+
+// Configurar la serialización y deserialización de usuario
+passport.serializeUser(function(user, done) {
+  done(null, user.username);
+});
+
+passport.deserializeUser(function(username, done) {
+  // Buscar al usuario en la base de datos
+  if (username === "admin") {
+    return done(null, {username: "admin"});
+  } else {
+    return done(null, false);
+  }
+});
+
+// Crear la aplicación Express
+const app = express();
+
+// Configurar la sesión
+const sessionStore = new MySQLStore({
+  host: "localhost",
+  port: 3306,
+  user: "root",
+  password: "password",
+  database: "sessions"
+});
+app.use(session({
+  secret: "secret-key",
+  store: sessionStore,
+  resave: false,
+  saveUninitialized: false
+}));
+
+// Inicializar Passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Crear los controladores para manejar las solicitudes de inicio de sesión y registro
+app.post("/login", passport.authenticate("local"), function(req, res) {
+  res.send("Autenticado");
+});
+
+app.get("/logout", function(req, res) {
+  req.logout();
+  res.send("Desconectado");
+});
+
+// Proteger las rutas que requieren autenticación
+app.get("/profile", isLoggedIn, function(req, res) {
+  res.send("Perfil");
+});
+
+function isLoggedIn(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.send("No autorizado");
+}
+
+// Iniciar el servidor
+app.listen(3000, function() {
+  console.log("Servidor iniciado en el puerto 3000");
+});
+
+
+
+------- VUE ----------
+
+
+<template>
+  <form @submit.prevent="login">
+    <label>
+      Nombre de usuario:
+      <input v-model="username" type="text" />
+    </label>
+    <br />
+    <label>
+      Contraseña:
+      <input v-model="password" type="password" />
+    </label>
+    <br />
+    <button type="submit">Iniciar sesión</button>
+  </form>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      username: "",
+      password: ""
+    };
+  },
+  methods: {
+    login() {
+      // Enviar una solicitud POST al servidor para iniciar sesión
+      axios.post("/login", {
+        username: this.username,
+        password: this.password
+      })
+      .then(response => {
+        // Si la autenticación es exitosa, redirigir al perfil
+        this.$router.push("/profile");
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    }
+  }
+};
+</script>

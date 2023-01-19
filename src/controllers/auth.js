@@ -212,11 +212,20 @@ const authPassportLogin = async (req, res, next) => {
                     return done(json(userData));        
                     //res.json(userData);
                 }else{
-                    res.status(400).send('Invalid credentials'); 
+                    res.status(400).send('Invalid credentials');
+                    done(null, false); 
                 }
             }
         });
     }));
+
+    passport.serializeUser(function(user, done){
+        done(null, user.id)        
+    })
+
+    passport.deserializeUser(function(id, done){
+        done(null)
+    })
 }
 
 const listUserByIdController = async (req, res, next) => {

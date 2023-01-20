@@ -213,7 +213,7 @@ const authPassportLogin = async (req, res, next) => {
                     //res.json(userData);
                 }else{
                     res.status(400).send('Invalid credentials');
-                    done(null, false); 
+                    return done(null, false); 
                 }
             }
         });

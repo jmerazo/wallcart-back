@@ -105,11 +105,11 @@ const agesNewListModel = async (date, result) => {
 							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fec_rad_factura) > 90 AND DATEDIFF('${date}', c.fec_rad_factura) < 181 THEN c.saldo END),0) edad4, 
 							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fec_rad_factura) > 180 AND DATEDIFF('${date}', c.fec_rad_factura) < 361 THEN c.saldo END),0) edad5, 
 							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fec_rad_factura) > 360 THEN c.saldo END),0) edad6 
-							FROM cartera AS c 
+							FROM cartera_hjmh AS c 
 							INNER JOIN empresa AS e ON c.nit = e.nit 
 							INNER JOIN regimen AS r ON r.cod_reg = e.cod_reg
 							GROUP BY c.nit 
-							ORDER BY r.nom_reg`, 
+							ORDER BY r.nom_reg, e.nombre`, 
 							(error, ages) => {
         if(error){
             return result(error)
@@ -130,7 +130,7 @@ const agesListModel = async (date, result) => {
 							COALESCE(SUM(CASE WHEN DATEDIFF(DATE(DATE_ADD(NOW(), INTERVAL -4 YEAR), DATE(DATE_ADD(NOW(), INTERVAL -5 YEAR)) THEN c.valor_factura END),0) A2018, 
 							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fecha_envio) > 180 AND DATEDIFF('${date}', c.fecha_envio) < 361 THEN c.valor_factura END),0) edad5, 
 							COALESCE(SUM(CASE WHEN DATEDIFF('${date}', c.fecha_envio) > 360 THEN c.valor_factura END),0) edad6 
-							FROM cartera AS c 
+							FROM cartera_hjmh AS c 
 							INNER JOIN empresa AS e ON c.nit = e.nit 
 							INNER JOIN regimen AS r ON r.cod_reg = e.cod_reg
 							GROUP BY c.nit 

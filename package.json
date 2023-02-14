@@ -36,6 +36,7 @@
     "pug": "^3.0.2",
     "read-excel-file": "^5.5.0",
     "sequelize": "^6.23.2",
+    "session": "^0.1.0",
     "timeago.js": "^4.0.2",
     "xlsx": "^0.18.5"
   },
